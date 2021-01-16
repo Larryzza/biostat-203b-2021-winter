@@ -129,7 +129,7 @@ zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | awk '(NR<=5)'
 ```
 ```{bash}
 echo "the number of rows:"
-zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | awk  -F ',' '{ print $1 }' | wc -l 
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | awk 'END { print NR }' 
 ```
 ```{bash}
 echo "the number of unique patients:"
@@ -144,6 +144,19 @@ zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | awk  -F ',' '{ print $1 }'
     ```
 Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` loop, how would you tabulate the number of times each of the four characters is mentioned?
 
+> **solution**: Use `grep` prints lines that match an name and then calculated the times.
+```{bash}
+echo "number of times Elizabeth. is mentioned:"
+grep 'Elizabeth' pride_and_prejudice.txt | wc -l
+echo "number of times Jane is mentioned:"
+grep 'Jane' pride_and_prejudice.txt | wc -l
+echo "number of times Lydia is mentioned:"
+grep 'Lydia' pride_and_prejudice.txt | wc -l
+echo "number of times Darcy is mentioned:"
+grep 'Darcy' pride_and_prejudice.txt | wc -l
+```
+
+
 2. What's the difference between the following two commands?
     ```{bash eval=FALSE}
     echo 'hello, world' > test1.txt
@@ -152,6 +165,9 @@ Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` lo
     ```{bash eval=FALSE}
     echo 'hello, world' >> test2.txt
     ```
+
+> **solution**: `'> test1.txt'` redirects output to `test1.txt`, overwriting the file. `'>> test1.txt'`redirects output to `test1.txt`, appending the redirected output at the end.
+
 
 3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
     ```{bash eval=FALSE}
@@ -165,6 +181,17 @@ Using `chmod` make the file executable by the owner, and run
     ./middle.sh pride_and_prejudice.txt 20 5
     ```
 Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
+
+> **solution**: 
+```{bash}
+./middle.sh pride_and_prejudice.txt 20 5
+```
+> the meaning of:
+
+> - `"$1"`: the first column of the input (the element `pride_and_prejudice.txt` here)
+- `"$2"`: the second column of the input (the element `20` here)
+- `"$3"`: the third column of the input (the element `5` here)
+> The first line `#!/bin/sh` means that the script should always be run with bash, rather than another shell. It's a convention for the server to know what program it should use to run the shell script.
 
 ## Q4. More fun with Linux
 
