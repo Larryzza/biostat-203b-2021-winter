@@ -203,11 +203,29 @@ cal
 `cal` display the calender of current month.
 
 ```{bash}
-
+cal 2021
 ```
-
-
-
+`cal 2021` display the calender of all month in 2021.
+```{bash}
+cal 9 1752
+```
+`cal 9 1752` seems there some days missing in September 1752.
+```{bash}
+date
+```
+`date` seems there some days missing in September 1752.
+```{bash}
+hostname
+```
+`hostname` provides the name of the server.
+```{bash}
+arch
+```
+`arch` provides the computer architecture.
+```{bash}
+uname -a
+```
+`uname -a` provides the computer architecture.
 
 
 
