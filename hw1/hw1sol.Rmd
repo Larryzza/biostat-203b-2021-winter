@@ -55,16 +55,17 @@ After each homework due date, teaching assistant and instructor will check out y
 ### Q1.5
 After this course, you can make this repository public and use it to demonstrate your skill sets on job market.
 
-> **solution**: Sounds good. Thanks!
+> **solution**: Sounds very nice. Thanks!
 
 ## Q2. Linux Shell Commands
 
 ### Q2.1
 This exercise (and later in this course) uses the [MIMIC-IV data](https://mimic-iv.mit.edu), a freely accessible critical care database developed by the MIT Lab for Computational Physiology. Follow the instructions at <https://mimic-iv.mit.edu/docs/access/> to (1) complete the CITI `Data or Specimens Only Research` course and (2) obtain the PhysioNet credential for using the MIMIC-IV data. Display the verification links to your completion report and completion certificate here. (Hint: The CITI training takes a couple hours and the PhysioNet credentialing takes a couple days; do not leave it to the last minute.)
 
-> **solution**: Done.
+> **solution**: The verification links to the [completion report](https://www.citiprogram.org/verify/?k600f5f26-0a64-4f74-a92f-83c92ec84f0e-40386397) and [completion certificate](https://www.citiprogram.org/verify/?w4f427623-e63f-402b-b4df-48fd01dd09a6-40386397). 
 
-2. The `/usr/203b-data/mimic-iv/` folder on teaching server contains data sets from MIMIC-IV. Refer to <https://mimic-iv.mit.edu/docs/datasets/> for details of data files.  
+### Q2.2
+The `/usr/203b-data/mimic-iv/` folder on teaching server contains data sets from MIMIC-IV. Refer to <https://mimic-iv.mit.edu/docs/datasets/> for details of data files.  
     ```{bash}
     ls -l /usr/203b-data/mimic-iv
     ```
@@ -72,18 +73,68 @@ Please, do **not** put these data files into Git; they are big. Do **not** copy 
 
     Use Bash commands to answer following questions.
 
-3. Display the contents in the folders `core`, `hosp`, `icu`. What are the functionalities of the bash commands `zcat`, `zless`, `zmore`, and `zgrep`? 
+> **solution**: Done.
 
-4. What's the output of following bash script?
-    ```{bash, eval=F}
+### Q2.3
+Display the contents in the folders `core`, `hosp`, `icu`. What are the functionalities of the bash commands `zcat`, `zless`, `zmore`, and `zgrep`? 
+
+> **solution**:
+    ```{bash}
+    ls -l /usr/203b-data/mimic-iv/core
+    ```
+    ```{bash}
+    ls -l /usr/203b-data/mimic-iv/hosp
+    ```
+    ```{bash}
+    ls -l /usr/203b-data/mimic-iv/icu
+    ```
+
+> The functionalities of bash commands:
+
+> - `zcat`: Line utility for viewing the contents of a compressed file without literally uncompressing it.
+- `zless`: A filter which allows examination of compressed or plain text files one screenful at a time on a soft-copy terminal.
+- `zmore`: A file perusal filter for crt viewing of compressed text.
+- `zgrep`: Search out expressions from a given a file even if it is compressed.
+ 
+### Q2.4
+What's the output of following bash script?
+    ```{bash}
     for datafile in /usr/203b-data/mimic-iv/core/*.gz
       do
         ls -l $datafile
       done
     ```
+> **solution**: The bash script print out all `.gz` files in the folder `core`.
+
 Display the number of lines in each data file using a similar loop.
 
-4. Display the first few lines of `admissions.csv.gz`. How many rows are in this data file? How many unique patients (identified by `subject_id`) are in this data file? What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, `language`, `marital_status`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq`, `wc`, and so on.)
+> **solution**:
+
+    ```{bash}
+    for datafile in /usr/203b-data/mimic-iv/core/*.gz
+      do
+        ls -l $datafile
+        echo "the number of lines:" 
+        wc -l < $datafile
+      done
+    ```
+
+
+### Q2.5
+Display the first few lines of `admissions.csv.gz`. How many rows are in this data file? How many unique patients (identified by `subject_id`) are in this data file? What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, `language`, `marital_status`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq`, `wc`, and so on.)
+
+> **solution**:
+```{bash}
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | awk '(NR<=5)'
+```
+```{bash}
+echo "the number of rows:"
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | awk  -F ',' '{ print $1 }' | wc -l 
+```
+```{bash}
+echo "the number of unique patients:"
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | awk  -F ',' '{ print $1 }' | uniq | wc -l
+```
 
 ## Q3. Who's popular in Price and Prejudice
 
