@@ -92,8 +92,8 @@ ls -l /usr/203b-data/mimic-iv/icu
 > The functionalities of bash commands:
 
 > - `zcat`: Line utility for viewing the contents of a compressed file without literally uncompressing it.
-- `zless`: A filter which allows examination of compressed or plain text files one screenful at a time on a soft-copy terminal.
-- `zmore`: A file perusal filter for crt viewing of compressed text.
+- `zmore`: a filter which allows examination of compressed or plain text files one screenful at a time on a soft-copy terminal.
+- `zless`: works the same way as `zmore`, except the decompressed output is displayed by the `less` command for additional viewing flexibility.
 - `zgrep`: Search out expressions from a given a file even if it is compressed.
  
 ### Q2.4
@@ -158,13 +158,6 @@ echo "ethnicity: (count & values (*NULL included))"
 zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
 awk  -F ',' '{ print $12}' | tail -n +2 | sort | uniq -c 
 ```
-```{bash}
-echo "admission_location: (time & values)"
-zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
-awk  -F ',' '{ print $7}'| tail -n +2 | sort | uniq -c 
-```
-
-
 
 ## Q3. Who's popular in Price and Prejudice
 
@@ -241,7 +234,7 @@ cal 2021
 ```{bash}
 cal 9 1752
 ```
-> `cal 9 1752` seems there some days missing in September 1752. The Gregorian calendar reform was adopted by the Kingdom of Great Britain in September 1752. As a result, the September 1752 cal shows the adjusted days missing. [[wiki](https://en.wikipedia.org/wiki/Cal_(Unix))]
+> `cal 9 1752` seems display a incomplete calender of September 1752. Reason: The Gregorian calendar reform was adopted by the Kingdom of Great Britain in September 1752. As a result, the September 1752 cal shows the adjusted days missing. [[wiki](https://en.wikipedia.org/wiki/Cal_(Unix))]
 ```{bash}
 date
 ```
