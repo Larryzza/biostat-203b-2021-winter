@@ -109,15 +109,14 @@ What's the output of following bash script?
 Display the number of lines in each data file using a similar loop.
 
 > **solution**:
-
-    ```{bash}
-    for datafile in /usr/203b-data/mimic-iv/core/*.gz
-      do
-        ls -l $datafile
-        echo "the number of lines:" 
-        zcat $datafile | awk 'END { print NR }'
-      done
-    ```
+ ```{bash}
+ for datafile in /usr/203b-data/mimic-iv/core/*.gz
+   do
+     ls -l $datafile
+     echo "the number of lines:" 
+     zcat $datafile | awk 'END { print NR }'
+   done
+ ```
 
 ### Q2.5
 Display the first few lines of `admissions.csv.gz`. How many rows are in this data file? How many unique patients (identified by `subject_id`) are in this data file? What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, `language`, `marital_status`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq`, `wc`, and so on.)
@@ -168,16 +167,16 @@ You and your friend just have finished reading *Pride and Prejudice* by Jane Aus
     ```
 Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` loop, how would you tabulate the number of times each of the four characters is mentioned?
 
-> **solution**: Use `grep` prints lines that match an name and then calculated the times.
+> **solution**: Use `grep -o` prints strings that match an name and then calculated the times.
 ```{bash}
 echo "number of times Elizabeth. is mentioned:"
-grep 'Elizabeth' pride_and_prejudice.txt | wc -l
+grep -o 'Elizabeth' pride_and_prejudice.txt | wc -l
 echo "number of times Jane is mentioned:"
-grep 'Jane' pride_and_prejudice.txt | wc -l
+grep -o 'Jane' pride_and_prejudice.txt | wc -l
 echo "number of times Lydia is mentioned:"
-grep 'Lydia' pride_and_prejudice.txt | wc -l
+grep -o 'Lydia' pride_and_prejudice.txt | wc -l
 echo "number of times Darcy is mentioned:"
-grep 'Darcy' pride_and_prejudice.txt | wc -l
+grep -o 'Darcy' pride_and_prejudice.txt | wc -l
 ```
 
 ### Q3.2 
@@ -190,7 +189,7 @@ What's the difference between the following two commands?
     echo 'hello, world' >> test2.txt
     ```
 
-> **solution**: `'> test1.txt'` redirects output to `test1.txt`, overwriting the file. `'>> test1.txt'`redirects output to `test1.txt`, appending the redirected output at the end.
+> **solution**: `'> test1.txt'` redirects output to `test1.txt`, overwriting the file. `'>> test1.txt'` redirects output to `test1.txt`, appending the redirected output at the end.
 
 ### Q3.3 
 Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:

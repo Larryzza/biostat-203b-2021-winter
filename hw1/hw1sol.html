@@ -1779,17 +1779,13 @@ for datafile in /usr/203b-data/mimic-iv/core/*.gz
 <blockquote>
 <p><strong>solution</strong>:</p>
 </blockquote>
-<pre><code>```bash
-for datafile in /usr/203b-data/mimic-iv/core/*.gz
-  do
-    ls -l $datafile
-    echo &quot;the number of lines:&quot; 
-    zcat $datafile | awk &#39;END { print NR }&#39;
-  done
-```
-
-```
-## -rw-r--r--. 1 huazhou huazhou 17224843 Jan 11 01:55 /usr/203b-data/mimic-iv/core/admissions.csv.gz
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">for</span> <span class="ex">datafile</span> in /usr/203b-data/mimic-iv/core/*.gz</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="kw">do</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>    <span class="fu">ls</span> -l <span class="va">$datafile</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a>    <span class="bu">echo</span> <span class="st">&quot;the number of lines:&quot;</span> </span>
+<span id="cb12-5"><a href="#cb12-5"></a>    <span class="fu">zcat</span> <span class="va">$datafile</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;END { print NR }&#39;</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a>  <span class="kw">done</span></span></code></pre></div>
+<pre><code>## -rw-r--r--. 1 huazhou huazhou 17224843 Jan 11 01:55 /usr/203b-data/mimic-iv/core/admissions.csv.gz
 ## the number of lines:
 ## 524521
 ## -rw-r--r--. 1 huazhou huazhou 2884996 Jan 11 01:54 /usr/203b-data/mimic-iv/core/patients.csv.gz
@@ -1797,8 +1793,7 @@ for datafile in /usr/203b-data/mimic-iv/core/*.gz
 ## 383221
 ## -rw-r--r--. 1 huazhou huazhou 51188147 Jan 11 01:55 /usr/203b-data/mimic-iv/core/transfers.csv.gz
 ## the number of lines:
-## 2192964
-```</code></pre>
+## 2192964</code></pre>
 </div>
 <div id="q2.5" class="section level3">
 <h3>Q2.5</h3>
@@ -1806,42 +1801,42 @@ for datafile in /usr/203b-data/mimic-iv/core/*.gz
 <blockquote>
 <p><strong>solution</strong>:</p>
 </blockquote>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">awk</span> <span class="st">&#39;(NR&lt;=5)&#39;</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">awk</span> <span class="st">&#39;(NR&lt;=5)&#39;</span></span></code></pre></div>
 <pre><code>## subject_id,hadm_id,admittime,dischtime,deathtime,admission_type,admission_location,discharge_location,insurance,language,marital_status,ethnicity,edregtime,edouttime,hospital_expire_flag
 ## 12427812,21593330,2184-01-06 11:51:00,2184-01-10 11:45:00,,URGENT,PHYSICIAN REFERRAL,HOME,Other,ENGLISH,,UNKNOWN,,,0
 ## 14029832,22059088,2120-01-18 01:28:00,2120-01-20 16:13:00,,URGENT,TRANSFER FROM HOSPITAL,HOME,Other,ENGLISH,,OTHER,,,0
 ## 14495017,22484010,2175-01-28 15:41:00,2175-01-29 16:00:00,,DIRECT EMER.,PHYSICIAN REFERRAL,HOME,Other,?,,WHITE,,,0
 ## 13676048,23865469,2193-01-19 05:27:00,2193-01-24 18:59:00,,URGENT,PHYSICIAN REFERRAL,HOME,Other,?,MARRIED,WHITE,,,0</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="bu">echo</span> <span class="st">&quot;the number of rows:&quot;</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="fu">awk</span> <span class="st">&#39;END { print NR }&#39;</span> </span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1"></a><span class="bu">echo</span> <span class="st">&quot;the number of rows:&quot;</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">awk</span> <span class="st">&#39;END { print NR }&#39;</span> </span></code></pre></div>
 <pre><code>## the number of rows:
 ## 524521</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1"></a><span class="bu">echo</span> <span class="st">&quot;the number of unique patients: (colname row excluded)&quot;</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $1 }&#39;</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="kw">|</span></span>
-<span id="cb17-4"><a href="#cb17-4"></a><span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;END { print NR }&#39;</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1"></a><span class="bu">echo</span> <span class="st">&quot;the number of unique patients: (colname row excluded)&quot;</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $1 }&#39;</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="kw">|</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;END { print NR }&#39;</span></span></code></pre></div>
 <pre><code>## the number of unique patients: (colname row excluded)
 ## 257366</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1"></a><span class="bu">echo</span> <span class="st">&quot;admission_type: (count &amp; values)&quot;</span></span>
-<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
-<span id="cb19-3"><a href="#cb19-3"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $6}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
-<span id="cb19-4"><a href="#cb19-4"></a><span class="bu">echo</span> <span class="st">&quot;admission_location: (count &amp; values (*NULL included))&quot;</span></span>
-<span id="cb19-5"><a href="#cb19-5"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
-<span id="cb19-6"><a href="#cb19-6"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $7}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
-<span id="cb19-7"><a href="#cb19-7"></a><span class="bu">echo</span> <span class="st">&quot;insurance: (count &amp; values (*NULL included))&quot;</span></span>
-<span id="cb19-8"><a href="#cb19-8"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
-<span id="cb19-9"><a href="#cb19-9"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $9}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
-<span id="cb19-10"><a href="#cb19-10"></a><span class="bu">echo</span> <span class="st">&quot;language: (count &amp; values (*NULL included))&quot;</span></span>
-<span id="cb19-11"><a href="#cb19-11"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
-<span id="cb19-12"><a href="#cb19-12"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $10}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
-<span id="cb19-13"><a href="#cb19-13"></a><span class="bu">echo</span> <span class="st">&quot;marital_status: (count &amp; values (*NULL included))&quot;</span></span>
-<span id="cb19-14"><a href="#cb19-14"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
-<span id="cb19-15"><a href="#cb19-15"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $11}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
-<span id="cb19-16"><a href="#cb19-16"></a><span class="bu">echo</span> <span class="st">&quot;ethnicity: (count &amp; values (*NULL included))&quot;</span></span>
-<span id="cb19-17"><a href="#cb19-17"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
-<span id="cb19-18"><a href="#cb19-18"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $12}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1"></a><span class="bu">echo</span> <span class="st">&quot;admission_type: (count &amp; values)&quot;</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
+<span id="cb20-3"><a href="#cb20-3"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $6}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="bu">echo</span> <span class="st">&quot;admission_location: (count &amp; values (*NULL included))&quot;</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
+<span id="cb20-6"><a href="#cb20-6"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $7}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
+<span id="cb20-7"><a href="#cb20-7"></a><span class="bu">echo</span> <span class="st">&quot;insurance: (count &amp; values (*NULL included))&quot;</span></span>
+<span id="cb20-8"><a href="#cb20-8"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
+<span id="cb20-9"><a href="#cb20-9"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $9}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
+<span id="cb20-10"><a href="#cb20-10"></a><span class="bu">echo</span> <span class="st">&quot;language: (count &amp; values (*NULL included))&quot;</span></span>
+<span id="cb20-11"><a href="#cb20-11"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
+<span id="cb20-12"><a href="#cb20-12"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $10}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
+<span id="cb20-13"><a href="#cb20-13"></a><span class="bu">echo</span> <span class="st">&quot;marital_status: (count &amp; values (*NULL included))&quot;</span></span>
+<span id="cb20-14"><a href="#cb20-14"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
+<span id="cb20-15"><a href="#cb20-15"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $11}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span>
+<span id="cb20-16"><a href="#cb20-16"></a><span class="bu">echo</span> <span class="st">&quot;ethnicity: (count &amp; values (*NULL included))&quot;</span></span>
+<span id="cb20-17"><a href="#cb20-17"></a><span class="fu">zcat</span> /usr/203b-data/mimic-iv/core/admissions.csv.gz <span class="kw">|</span> </span>
+<span id="cb20-18"><a href="#cb20-18"></a><span class="fu">awk</span>  -F <span class="st">&#39;,&#39;</span> <span class="st">&#39;{ print $12}&#39;</span> <span class="kw">|</span> <span class="fu">tail</span> -n +2 <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> -c </span></code></pre></div>
 <pre><code>## admission_type: (count &amp; values)
 ##    7259 AMBULATORY OBSERVATION
 ##   21595 DIRECT EMER.
@@ -1899,24 +1894,24 @@ curl http://www.gutenberg.org/cache/epub/42671/pg42671.txt &gt; pride_and_prejud
 ```</code></pre>
 <p>Do <strong>not</strong> put this text file <code>pride_and_prejudice.txt</code> in Git. Using a <code>for</code> loop, how would you tabulate the number of times each of the four characters is mentioned?</p>
 <blockquote>
-<p><strong>solution</strong>: Use <code>grep</code> prints lines that match an name and then calculated the times.</p>
+<p><strong>solution</strong>: Use <code>grep -o</code> prints strings that match an name and then calculated the times.</p>
 </blockquote>
-<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1"></a><span class="bu">echo</span> <span class="st">&quot;number of times Elizabeth. is mentioned:&quot;</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">grep</span> <span class="st">&#39;Elizabeth&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span>
-<span id="cb22-3"><a href="#cb22-3"></a><span class="bu">echo</span> <span class="st">&quot;number of times Jane is mentioned:&quot;</span></span>
-<span id="cb22-4"><a href="#cb22-4"></a><span class="fu">grep</span> <span class="st">&#39;Jane&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span>
-<span id="cb22-5"><a href="#cb22-5"></a><span class="bu">echo</span> <span class="st">&quot;number of times Lydia is mentioned:&quot;</span></span>
-<span id="cb22-6"><a href="#cb22-6"></a><span class="fu">grep</span> <span class="st">&#39;Lydia&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span>
-<span id="cb22-7"><a href="#cb22-7"></a><span class="bu">echo</span> <span class="st">&quot;number of times Darcy is mentioned:&quot;</span></span>
-<span id="cb22-8"><a href="#cb22-8"></a><span class="fu">grep</span> <span class="st">&#39;Darcy&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1"></a><span class="bu">echo</span> <span class="st">&quot;number of times Elizabeth. is mentioned:&quot;</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="fu">grep</span> -o <span class="st">&#39;Elizabeth&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span>
+<span id="cb23-3"><a href="#cb23-3"></a><span class="bu">echo</span> <span class="st">&quot;number of times Jane is mentioned:&quot;</span></span>
+<span id="cb23-4"><a href="#cb23-4"></a><span class="fu">grep</span> -o <span class="st">&#39;Jane&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span>
+<span id="cb23-5"><a href="#cb23-5"></a><span class="bu">echo</span> <span class="st">&quot;number of times Lydia is mentioned:&quot;</span></span>
+<span id="cb23-6"><a href="#cb23-6"></a><span class="fu">grep</span> -o <span class="st">&#39;Lydia&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span>
+<span id="cb23-7"><a href="#cb23-7"></a><span class="bu">echo</span> <span class="st">&quot;number of times Darcy is mentioned:&quot;</span></span>
+<span id="cb23-8"><a href="#cb23-8"></a><span class="fu">grep</span> -o <span class="st">&#39;Darcy&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span></code></pre></div>
 <pre><code>## number of times Elizabeth. is mentioned:
-## 633
+## 634
 ## number of times Jane is mentioned:
-## 290
+## 294
 ## number of times Lydia is mentioned:
-## 166
+## 170
 ## number of times Darcy is mentioned:
-## 414</code></pre>
+## 417</code></pre>
 </div>
 <div id="q3.2" class="section level3">
 <h3>Q3.2</h3>
@@ -1930,7 +1925,7 @@ and
 echo &#39;hello, world&#39; &gt;&gt; test2.txt
 ```</code></pre>
 <blockquote>
-<p><strong>solution</strong>: <code>&#39;&gt; test1.txt&#39;</code> redirects output to <code>test1.txt</code>, overwriting the file. <code>&#39;&gt;&gt; test1.txt&#39;</code>redirects output to <code>test1.txt</code>, appending the redirected output at the end.</p>
+<p><strong>solution</strong>: <code>&#39;&gt; test1.txt&#39;</code> redirects output to <code>test1.txt</code>, overwriting the file. <code>&#39;&gt;&gt; test1.txt&#39;</code> redirects output to <code>test1.txt</code>, appending the redirected output at the end.</p>
 </blockquote>
 </div>
 <div id="q3.3" class="section level3">
@@ -1950,7 +1945,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <blockquote>
 <p><strong>solution</strong>:</p>
 </blockquote>
-<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1"></a><span class="ex">./middle.sh</span> pride_and_prejudice.txt 20 5</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1"></a><span class="ex">./middle.sh</span> pride_and_prejudice.txt 20 5</span></code></pre></div>
 <pre><code>## 
 ## Author: Jane Austen
 ## 
@@ -1977,7 +1972,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <blockquote>
 <p><strong>solution</strong>:</p>
 </blockquote>
-<div class="sourceCode" id="cb29"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1"></a><span class="fu">cal</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">cal</span></span></code></pre></div>
 <pre><code>##     January 2021    
 ## Su Mo Tu We Th Fr Sa
 ##                 1  2
@@ -1989,7 +1984,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <blockquote>
 <p><code>cal</code> display the calender of current month.</p>
 </blockquote>
-<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">cal</span> 2021</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">cal</span> 2021</span></code></pre></div>
 <pre><code>##                                2021                               
 ## 
 ##        January               February                 March       
@@ -2027,7 +2022,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <blockquote>
 <p><code>cal 2021</code> display the calender of all month in 2021.</p>
 </blockquote>
-<div class="sourceCode" id="cb33"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1"></a><span class="fu">cal</span> 9 1752</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu">cal</span> 9 1752</span></code></pre></div>
 <pre><code>##    September 1752   
 ## Su Mo Tu We Th Fr Sa
 ##        1  2 14 15 16
@@ -2036,70 +2031,72 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <blockquote>
 <p><code>cal 9 1752</code> seems display a incomplete calender of September 1752. Reason: The Gregorian calendar reform was adopted by the Kingdom of Great Britain in September 1752. As a result, the September 1752 cal shows the adjusted days missing. [<a href="https://en.wikipedia.org/wiki/Cal_(Unix)">wiki</a>]</p>
 </blockquote>
-<div class="sourceCode" id="cb35"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1"></a><span class="fu">date</span></span></code></pre></div>
-<pre><code>## Mon Jan 18 07:08:57 UTC 2021</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1"></a><span class="fu">date</span></span></code></pre></div>
+<pre><code>## Mon Jan 18 17:49:21 UTC 2021</code></pre>
 <blockquote>
 <p><code>date</code> returns the date in the default system timezone.</p>
 </blockquote>
-<div class="sourceCode" id="cb37"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1"></a><span class="fu">hostname</span></span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1"></a><span class="fu">hostname</span></span></code></pre></div>
 <pre><code>## ucla-biostat-203b</code></pre>
 <blockquote>
 <p><code>hostname</code> provides the name of the server.</p>
 </blockquote>
-<div class="sourceCode" id="cb39"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1"></a><span class="fu">arch</span></span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">arch</span></span></code></pre></div>
 <pre><code>## x86_64</code></pre>
 <blockquote>
 <p><code>arch</code> provides the computer architecture.</p>
 </blockquote>
-<div class="sourceCode" id="cb41"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1"></a><span class="fu">uname</span> -a</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1"></a><span class="fu">uname</span> -a</span></code></pre></div>
 <pre><code>## Linux ucla-biostat-203b 3.10.0-1160.6.1.el7.x86_64 #1 SMP Tue Nov 17 13:59:11 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</code></pre>
 <blockquote>
 <p><code>uname -a</code> prints the name, version and other details about the current machine and the operating system running on it.</p>
 </blockquote>
-<div class="sourceCode" id="cb43"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1"></a><span class="fu">uptime</span></span></code></pre></div>
-<pre><code>##  07:08:57 up 14 days,  9:19,  0 users,  load average: 0.59, 0.28, 0.24</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1"></a><span class="fu">uptime</span></span></code></pre></div>
+<pre><code>##  17:49:21 up 14 days, 20:00,  1 user,  load average: 0.73, 0.28, 0.14</code></pre>
 <blockquote>
 <p><code>uptime</code> returns information about how long your system has been running together with the current time, number of users with running sessions, and the system load averages for the past 1, 5, and 15 minutes.</p>
 </blockquote>
-<div class="sourceCode" id="cb45"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1"></a><span class="fu">who</span> am i</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1"></a><span class="fu">who</span> am i</span></code></pre></div>
 <blockquote>
 <p><code>who am i</code> displays the username of the current user when this command is invoked.</p>
 </blockquote>
-<div class="sourceCode" id="cb46"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1"></a><span class="fu">who</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1"></a><span class="fu">who</span></span></code></pre></div>
+<pre><code>## ionahu08 pts/0        2021-01-18 17:34 (cpe-23-243-156-211.socal.res.rr.com)</code></pre>
 <blockquote>
 <p><code>who</code> displays account information: user login name, user’s terminal, time of login as well as the host the user is logged in from.</p>
 </blockquote>
-<div class="sourceCode" id="cb47"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1"></a><span class="fu">w</span></span></code></pre></div>
-<pre><code>##  07:08:57 up 14 days,  9:19,  0 users,  load average: 0.59, 0.28, 0.24
-## USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1"></a><span class="fu">w</span></span></code></pre></div>
+<pre><code>##  17:49:22 up 14 days, 20:00,  1 user,  load average: 0.73, 0.28, 0.14
+## USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+## ionahu08 pts/0    cpe-23-243-156-2 17:34   10:42   0.03s  0.03s -bash</code></pre>
 <blockquote>
 <p><code>w</code> displays information about currently logged in users and what each user is doing.</p>
 </blockquote>
-<div class="sourceCode" id="cb49"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1"></a><span class="fu">id</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1"></a><span class="fu">id</span></span></code></pre></div>
 <pre><code>## uid=1044(zianzhuang) gid=1046(zianzhuang) groups=1046(zianzhuang) context=system_u:system_r:initrc_t:s0</code></pre>
 <blockquote>
 <p><code>id</code> print real and effective User ID (UID) and Group ID (GID).</p>
 </blockquote>
-<div class="sourceCode" id="cb51"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1"></a><span class="fu">last</span> <span class="kw">|</span> <span class="fu">head</span></span></code></pre></div>
-<pre><code>## ajedward pts/1        cpe-98-149-10-21 Mon Jan 18 05:06 - 05:54  (00:48)    
-## ajedward pts/1        cpe-98-149-10-21 Mon Jan 18 04:29 - 05:05  (00:36)    
-## ajedward pts/1        cpe-98-149-10-21 Mon Jan 18 04:12 - 04:13  (00:01)    
-## jihcai   pts/0        ip68-6-101-100.s Mon Jan 18 03:50 - 05:26  (01:35)    
-## alvinw   pts/1        cpe-172-112-186- Mon Jan 18 02:52 - 04:08  (01:16)    
-## alvinw   pts/9        cpe-172-112-186- Mon Jan 18 02:38 - 02:48  (00:10)    
-## zhaofan1 pts/12       cpe-76-91-16-146 Mon Jan 18 01:23 - 04:48  (03:25)    
-## alvinw   pts/11       cpe-172-112-186- Mon Jan 18 01:04 - 02:25  (01:20)    
-## ionahu08 pts/9        075-084-112-205. Mon Jan 18 00:56 - 01:34  (00:37)    
-## hunanzho pts/8        47.145.197.173   Mon Jan 18 00:54 - 01:25  (00:30)</code></pre>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1"></a><span class="fu">last</span> <span class="kw">|</span> <span class="fu">head</span></span></code></pre></div>
+<pre><code>## ionahu08 pts/0        cpe-23-243-156-2 Mon Jan 18 17:34   still logged in   
+## ionahu08 pts/0        cpe-23-243-156-2 Mon Jan 18 15:23 - 17:33  (02:09)    
+## hunanzho pts/0        47.145.202.194   Mon Jan 18 12:32 - 12:36  (00:03)    
+## hunanzho pts/0        47.145.202.194   Mon Jan 18 12:00 - 12:30  (00:30)    
+## hunanzho pts/0        47.145.202.194   Mon Jan 18 10:27 - 11:58  (01:31)    
+## wzdbruin pts/4        112.32.8.178     Mon Jan 18 09:02 - 09:05  (00:03)    
+## alvinw   pts/1        cpe-172-112-186- Mon Jan 18 08:15 - 09:02  (00:46)    
+## ionahu08 pts/0        cpe-23-243-156-2 Mon Jan 18 07:34 - 09:23  (01:49)    
+## ajedward pts/1        cpe-98-149-10-21 Mon Jan 18 05:06 - 05:54  (00:48)    
+## ajedward pts/1        cpe-98-149-10-21 Mon Jan 18 04:29 - 05:05  (00:36)</code></pre>
 <blockquote>
 <p><code>last | head</code> displays the first 10 users logged in and out since the file /var/log/wtmp was created.</p>
 </blockquote>
-<div class="sourceCode" id="cb53"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1"></a><span class="bu">echo</span> <span class="dt">{con,pre}{sent,fer}{s,ed}</span></span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1"></a><span class="bu">echo</span> <span class="dt">{con,pre}{sent,fer}{s,ed}</span></span></code></pre></div>
 <pre><code>## consents consented confers confered presents presented prefers prefered</code></pre>
 <blockquote>
 <p><code>echo {con,pre}{sent,fer}{s,ed}</code> generates all the permutations possible of a set of elements ({con,pre}{sent,fer}{s,ed}) stored in a variable in groups of 2 elements.</p>
 </blockquote>
-<div class="sourceCode" id="cb55"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1"></a><span class="bu">time</span> sleep 5</span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1"></a><span class="bu">time</span> sleep 5</span></code></pre></div>
 <pre><code>## 
 ## real 0m5.002s
 ## user 0m0.002s
@@ -2107,7 +2104,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <blockquote>
 <p><code>time sleep 5</code> pauses execution of shell scripts or commands for a 5-second period on a Linux</p>
 </blockquote>
-<div class="sourceCode" id="cb57"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1"></a><span class="bu">history</span> <span class="kw">|</span> <span class="fu">tail</span></span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1"></a><span class="bu">history</span> <span class="kw">|</span> <span class="fu">tail</span></span></code></pre></div>
 <blockquote>
 <p><code>history | tail</code> shows 10 of the last commands that have been recently used.</p>
 </blockquote>
