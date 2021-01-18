@@ -79,15 +79,15 @@ Please, do **not** put these data files into Git; they are big. Do **not** copy 
 Display the contents in the folders `core`, `hosp`, `icu`. What are the functionalities of the bash commands `zcat`, `zless`, `zmore`, and `zgrep`? 
 
 > **solution**:
-    ```{bash}
-    ls -l /usr/203b-data/mimic-iv/core
-    ```
-    ```{bash}
-    ls -l /usr/203b-data/mimic-iv/hosp
-    ```
-    ```{bash}
-    ls -l /usr/203b-data/mimic-iv/icu
-    ```
+```{bash}
+ls -l /usr/203b-data/mimic-iv/core
+```
+```{bash}
+ls -l /usr/203b-data/mimic-iv/hosp
+```
+```{bash}
+ls -l /usr/203b-data/mimic-iv/icu
+```
 
 > The functionalities of bash commands:
 
@@ -133,10 +133,38 @@ zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz |
 awk 'END { print NR }' 
 ```
 ```{bash}
-echo "the number of unique patients:"
+echo "the number of unique patients: (colname row excluded)"
 zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
-awk  -F ',' '{ print $1 }' | uniq | wc -l
+awk  -F ',' '{ print $1 }' | sort | uniq |
+tail -n +2 | awk 'END { print NR }'
 ```
+```{bash}
+echo "admission_type: (count & values)"
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
+awk  -F ',' '{ print $6}' | tail -n +2 | sort | uniq -c 
+echo "admission_location: (count & values (*NULL included))"
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
+awk  -F ',' '{ print $7}' | tail -n +2 | sort | uniq -c 
+echo "insurance: (count & values (*NULL included))"
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
+awk  -F ',' '{ print $9}' | tail -n +2 | sort | uniq -c 
+echo "language: (count & values (*NULL included))"
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
+awk  -F ',' '{ print $10}' | tail -n +2 | sort | uniq -c 
+echo "marital_status: (count & values (*NULL included))"
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
+awk  -F ',' '{ print $11}' | tail -n +2 | sort | uniq -c 
+echo "ethnicity: (count & values (*NULL included))"
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
+awk  -F ',' '{ print $12}' | tail -n +2 | sort | uniq -c 
+```
+```{bash}
+echo "admission_location: (time & values)"
+zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
+awk  -F ',' '{ print $7}'| tail -n +2 | sort | uniq -c 
+```
+
+
 
 ## Q3. Who's popular in Price and Prejudice
 
