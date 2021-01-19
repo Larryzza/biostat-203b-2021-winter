@@ -169,14 +169,13 @@ Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` lo
 
 > **solution**: Use `grep -o` prints strings that match an name and then calculated the times.
 ```{bash}
-echo "number of times Elizabeth. is mentioned:"
-grep -o 'Elizabeth' pride_and_prejudice.txt | wc -l
-echo "number of times Jane is mentioned:"
-grep -o 'Jane' pride_and_prejudice.txt | wc -l
-echo "number of times Lydia is mentioned:"
-grep -o 'Lydia' pride_and_prejudice.txt | wc -l
-echo "number of times Darcy is mentioned:"
-grep -o 'Darcy' pride_and_prejudice.txt | wc -l
+declare -a name_arry=("Elizabeth" "Jane" "Lydia" "Darcy")
+for name_need in ${name_arry[@]}
+do
+grep -o $name_need pride_and_prejudice.txt | wc -l | 
+awk -v var="$name_need" '{print "---------------" 
+printf "%-10s|%-5s\n", var, $1}'
+done
 ```
 
 ### Q3.2 

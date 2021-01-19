@@ -1896,22 +1896,21 @@ curl http://www.gutenberg.org/cache/epub/42671/pg42671.txt &gt; pride_and_prejud
 <blockquote>
 <p><strong>solution</strong>: Use <code>grep -o</code> prints strings that match an name and then calculated the times.</p>
 </blockquote>
-<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1"></a><span class="bu">echo</span> <span class="st">&quot;number of times Elizabeth. is mentioned:&quot;</span></span>
-<span id="cb23-2"><a href="#cb23-2"></a><span class="fu">grep</span> -o <span class="st">&#39;Elizabeth&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span>
-<span id="cb23-3"><a href="#cb23-3"></a><span class="bu">echo</span> <span class="st">&quot;number of times Jane is mentioned:&quot;</span></span>
-<span id="cb23-4"><a href="#cb23-4"></a><span class="fu">grep</span> -o <span class="st">&#39;Jane&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span>
-<span id="cb23-5"><a href="#cb23-5"></a><span class="bu">echo</span> <span class="st">&quot;number of times Lydia is mentioned:&quot;</span></span>
-<span id="cb23-6"><a href="#cb23-6"></a><span class="fu">grep</span> -o <span class="st">&#39;Lydia&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span>
-<span id="cb23-7"><a href="#cb23-7"></a><span class="bu">echo</span> <span class="st">&quot;number of times Darcy is mentioned:&quot;</span></span>
-<span id="cb23-8"><a href="#cb23-8"></a><span class="fu">grep</span> -o <span class="st">&#39;Darcy&#39;</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l</span></code></pre></div>
-<pre><code>## number of times Elizabeth. is mentioned:
-## 634
-## number of times Jane is mentioned:
-## 294
-## number of times Lydia is mentioned:
-## 170
-## number of times Darcy is mentioned:
-## 417</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1"></a><span class="bu">declare</span> -a <span class="va">name_arry=(</span><span class="st">&quot;Elizabeth&quot;</span> <span class="st">&quot;Jane&quot;</span> <span class="st">&quot;Lydia&quot;</span> <span class="st">&quot;Darcy&quot;</span><span class="va">)</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="kw">for</span> <span class="ex">name_need</span> in <span class="va">${name_arry[@]}</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a><span class="kw">do</span></span>
+<span id="cb23-4"><a href="#cb23-4"></a><span class="fu">grep</span> -o <span class="va">$name_need</span> pride_and_prejudice.txt <span class="kw">|</span> <span class="fu">wc</span> -l <span class="kw">|</span> </span>
+<span id="cb23-5"><a href="#cb23-5"></a><span class="fu">awk</span> -v var=<span class="st">&quot;</span><span class="va">$name_need</span><span class="st">&quot;</span> <span class="st">&#39;{print &quot;---------------&quot; </span></span>
+<span id="cb23-6"><a href="#cb23-6"></a><span class="st">printf &quot;%-10s|%-5s\n&quot;, var, $1}&#39;</span></span>
+<span id="cb23-7"><a href="#cb23-7"></a><span class="kw">done</span></span></code></pre></div>
+<pre><code>## ---------------
+## Elizabeth |634  
+## ---------------
+## Jane      |294  
+## ---------------
+## Lydia     |170  
+## ---------------
+## Darcy     |417</code></pre>
 </div>
 <div id="q3.2" class="section level3">
 <h3>Q3.2</h3>
@@ -2032,7 +2031,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <p><code>cal 9 1752</code> seems display a incomplete calender of September 1752. Reason: The Gregorian calendar reform was adopted by the Kingdom of Great Britain in September 1752. As a result, the September 1752 cal shows the adjusted days missing. [<a href="https://en.wikipedia.org/wiki/Cal_(Unix)">wiki</a>]</p>
 </blockquote>
 <div class="sourceCode" id="cb36"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1"></a><span class="fu">date</span></span></code></pre></div>
-<pre><code>## Mon Jan 18 17:49:21 UTC 2021</code></pre>
+<pre><code>## Tue Jan 19 07:52:42 UTC 2021</code></pre>
 <blockquote>
 <p><code>date</code> returns the date in the default system timezone.</p>
 </blockquote>
@@ -2052,7 +2051,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <p><code>uname -a</code> prints the name, version and other details about the current machine and the operating system running on it.</p>
 </blockquote>
 <div class="sourceCode" id="cb44"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1"></a><span class="fu">uptime</span></span></code></pre></div>
-<pre><code>##  17:49:21 up 14 days, 20:00,  1 user,  load average: 0.73, 0.28, 0.14</code></pre>
+<pre><code>##  07:52:42 up 15 days, 10:03,  2 users,  load average: 0.25, 0.07, 0.06</code></pre>
 <blockquote>
 <p><code>uptime</code> returns information about how long your system has been running together with the current time, number of users with running sessions, and the system load averages for the past 1, 5, and 15 minutes.</p>
 </blockquote>
@@ -2061,14 +2060,16 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <p><code>who am i</code> displays the username of the current user when this command is invoked.</p>
 </blockquote>
 <div class="sourceCode" id="cb47"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1"></a><span class="fu">who</span></span></code></pre></div>
-<pre><code>## ionahu08 pts/0        2021-01-18 17:34 (cpe-23-243-156-211.socal.res.rr.com)</code></pre>
+<pre><code>## germc3   pts/0        2021-01-19 06:53 (149.142.80.37)
+## jihcai   pts/7        2021-01-19 07:48 (ip68-6-101-100.sb.sd.cox.net)</code></pre>
 <blockquote>
 <p><code>who</code> displays account information: user login name, user’s terminal, time of login as well as the host the user is logged in from.</p>
 </blockquote>
 <div class="sourceCode" id="cb49"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1"></a><span class="fu">w</span></span></code></pre></div>
-<pre><code>##  17:49:22 up 14 days, 20:00,  1 user,  load average: 0.73, 0.28, 0.14
+<pre><code>##  07:52:42 up 15 days, 10:03,  2 users,  load average: 0.25, 0.07, 0.06
 ## USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-## ionahu08 pts/0    cpe-23-243-156-2 17:34   10:42   0.03s  0.03s -bash</code></pre>
+## germc3   pts/0    149.142.80.37    06:53   45:46   0.03s  0.03s -bash
+## jihcai   pts/7    ip68-6-101-100.s 07:48   10.00s  0.09s  0.09s -bash</code></pre>
 <blockquote>
 <p><code>w</code> displays information about currently logged in users and what each user is doing.</p>
 </blockquote>
@@ -2078,16 +2079,16 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <p><code>id</code> print real and effective User ID (UID) and Group ID (GID).</p>
 </blockquote>
 <div class="sourceCode" id="cb53"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1"></a><span class="fu">last</span> <span class="kw">|</span> <span class="fu">head</span></span></code></pre></div>
-<pre><code>## ionahu08 pts/0        cpe-23-243-156-2 Mon Jan 18 17:34   still logged in   
-## ionahu08 pts/0        cpe-23-243-156-2 Mon Jan 18 15:23 - 17:33  (02:09)    
-## hunanzho pts/0        47.145.202.194   Mon Jan 18 12:32 - 12:36  (00:03)    
-## hunanzho pts/0        47.145.202.194   Mon Jan 18 12:00 - 12:30  (00:30)    
-## hunanzho pts/0        47.145.202.194   Mon Jan 18 10:27 - 11:58  (01:31)    
-## wzdbruin pts/4        112.32.8.178     Mon Jan 18 09:02 - 09:05  (00:03)    
-## alvinw   pts/1        cpe-172-112-186- Mon Jan 18 08:15 - 09:02  (00:46)    
-## ionahu08 pts/0        cpe-23-243-156-2 Mon Jan 18 07:34 - 09:23  (01:49)    
-## ajedward pts/1        cpe-98-149-10-21 Mon Jan 18 05:06 - 05:54  (00:48)    
-## ajedward pts/1        cpe-98-149-10-21 Mon Jan 18 04:29 - 05:05  (00:36)</code></pre>
+<pre><code>## jihcai   pts/7        ip68-6-101-100.s Tue Jan 19 07:48   still logged in   
+## germc3   pts/0        149.142.80.37    Tue Jan 19 06:53   still logged in   
+## huazhou  pts/6        108-64-58-205.li Tue Jan 19 05:48 - 07:06  (01:18)    
+## kmli     pts/1        ip68-110-213-196 Tue Jan 19 03:03 - 03:27  (00:24)    
+## kmli     pts/1        ip68-110-213-196 Tue Jan 19 02:59 - 03:02  (00:02)    
+## lhashemi pts/0        cpe-23-242-240-4 Tue Jan 19 02:58 - 05:53  (02:54)    
+## ajedward pts/0        cpe-98-149-10-21 Tue Jan 19 00:26 - 02:27  (02:01)    
+## lhashemi pts/8        cpe-23-242-240-4 Mon Jan 18 23:16 - 01:19  (02:02)    
+## linyuzho pts/7        s-169-232-70-224 Mon Jan 18 23:10 - 01:10  (02:00)    
+## filipovi pts/7        ip70-181-107-212 Mon Jan 18 21:19 - 21:22  (00:02)</code></pre>
 <blockquote>
 <p><code>last | head</code> displays the first 10 users logged in and out since the file /var/log/wtmp was created.</p>
 </blockquote>
@@ -2100,7 +2101,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;
 <pre><code>## 
 ## real 0m5.002s
 ## user 0m0.002s
-## sys  0m0.000s</code></pre>
+## sys  0m0.001s</code></pre>
 <blockquote>
 <p><code>time sleep 5</code> pauses execution of shell scripts or commands for a 5-second period on a Linux</p>
 </blockquote>
