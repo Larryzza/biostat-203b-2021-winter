@@ -282,6 +282,8 @@ time sleep 5
 ```
 > `time sleep 5` pauses execution of shell scripts or commands for a 5-second period on a Linux 
 ```{bash}
+set -o history
+echo "zza"
 history | tail
 ```
 > `history | tail` shows 10 of the last commands that have been recently used.
