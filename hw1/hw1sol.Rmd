@@ -138,24 +138,16 @@ awk  -F ',' '{ print $1 }' | sort | uniq |
 tail -n +2 | awk 'END { print NR }'
 ```
 ```{bash}
-echo "admission_type: (count & values)"
+for i in 6 7 9 10 11 12; 
+do
+echo "---------------------------"
 zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
-awk  -F ',' '{ print $6}' | tail -n +2 | sort | uniq -c 
-echo "admission_location: (count & values (*NULL included))"
+awk  -F ',' -v i=$i '{ print $i }' | 
+awk '(NR<=1)''{printf "%-19s~%-20s\n", $1,
+"(count & values (* NULL/NA included))"}' 
 zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
-awk  -F ',' '{ print $7}' | tail -n +2 | sort | uniq -c 
-echo "insurance: (count & values (*NULL included))"
-zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
-awk  -F ',' '{ print $9}' | tail -n +2 | sort | uniq -c 
-echo "language: (count & values (*NULL included))"
-zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
-awk  -F ',' '{ print $10}' | tail -n +2 | sort | uniq -c 
-echo "marital_status: (count & values (*NULL included))"
-zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
-awk  -F ',' '{ print $11}' | tail -n +2 | sort | uniq -c 
-echo "ethnicity: (count & values (*NULL included))"
-zcat /usr/203b-data/mimic-iv/core/admissions.csv.gz | 
-awk  -F ',' '{ print $12}' | tail -n +2 | sort | uniq -c 
+awk  -F ',' -v i=$i '{ print $i }' | tail -n +2 | sort | uniq -c 
+done
 ```
 
 ## Q3. Who's popular in Price and Prejudice
@@ -210,9 +202,9 @@ Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this sh
 ```
 > the meaning of:
 
-> - `"$1"`: the first column of the input (the element `pride_and_prejudice.txt` here)
-- `"$2"`: the second column of the input (the element `20` here)
-- `"$3"`: the third column of the input (the element `5` here)
+> - `"$1"`: the first column/element of the input (the element `pride_and_prejudice.txt` here)
+- `"$2"`: the second column/element of the input (the element `20` here)
+- `"$3"`: the third column/element of the input (the element `5` here)
 
 > The first line `#!/bin/sh` means that the script should always be run with bash, rather than another shell. It's a convention for the server to know what program it should use to run the shell script.
 
