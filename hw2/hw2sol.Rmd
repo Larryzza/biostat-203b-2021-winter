@@ -39,7 +39,7 @@ if (str_detect(os, "Linux")) {
   mimic_path <- "/usr/203b-data/mimic-iv"
 } else if (str_detect(os, "macOS")) {
   mimic_path <- "Please double check your path"
-}
+} else {mimic_path <- "."}
 ```
 Use tidyverse (ggpot2, dplyr) to explore the [MIMIC-IV](https://mimic-iv.mit.edu) data introduced in [homework 1](https://ucla-biostat203b-2021winter.github.io/hw/hw1/hw1.html).
 
@@ -511,9 +511,10 @@ find_id <- function(x){
 idkey_all <- lapply(item_list %>% as.list, look_up)
 idkey <- sapply(idkey_all, find_id)
 
-labevents_icu %<>%
-  filter(itemid %in% as_vector(idkey)) %<>%
-  left_join(Reduce(rbind, idkey_all), by = "itemid")
+labevents_icu %>%
+  filter(itemid %in% as_vector(idkey)) %>%
+  left_join(Reduce(rbind, idkey_all), by = "itemid") %>%
+  fwrite("labevents_icu.csv.gz", nThread = getDTthreads())
 
 ```
 
@@ -540,10 +541,10 @@ char_name <- c("subject_id", "hadm_id", "itemid",
 #read and save
 if (!file.exists("chartevents_icu.csv.gz")){
   system.time(chartevents <- fread(str_c(mimic_path,"/icu/chartevents.csv.gz"),
-                     select = char_name, nThread = 1))
+                     select = char_name, nThread = getDTthreads()))
   chartevents %>%
     semi_join(icustays, by = c("subject_id", "hadm_id")) %>%
-    fwrite("chartevents_icu.csv.gz", nThread = 1)
+    fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
 }
 system.time(chartevents_icu <- fread("chartevents_icu.csv.gz",
                                      nThread = getDTthreads()))
@@ -570,9 +571,10 @@ find_id2 <- function(x){
 idkey_all2 <- lapply(item_list2 %>% as.list, look_up2)
 idkey2 <- sapply(idkey_all2, find_id2)
 
-chartevents_icu %<>%
-  filter(itemid %in% as_vector(idkey2)) %<>%
-  left_join(Reduce(rbind, idkey_all2), by = "itemid")
+chartevents_icu %>%
+  filter(itemid %in% as_vector(idkey2)) %>%
+  left_join(Reduce(rbind, idkey_all2), by = "itemid") %>%
+  fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
 
 ```
 
