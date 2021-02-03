@@ -532,7 +532,7 @@ readLines(str_c(mimic_path,"/icu/chartevents.csv.gz"),n = 5L)
 ```
 
 **begin data processing**
-```{r}
+```{r, eval=F}
 item_list2 <- c("heart rate", "blood pressure", 
                "body temperature", "SpO2", "respiratory rate")
 char_name <- c("subject_id", "hadm_id", "itemid",
@@ -575,8 +575,15 @@ chartevents_icu %>%
   filter(itemid %in% as_vector(idkey2)) %>%
   left_join(Reduce(rbind, idkey_all2), by = "itemid") %>%
   fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
-
 ```
+
+Check the content of the processed data
+```{r}
+system.time(chartevents_icu <- fread("chartevents_icu.csv.gz",
+                                     nThread = getDTthreads()))
+chartevents_icu
+```
+
 
 
 ## Q8. Putting things together
