@@ -468,7 +468,7 @@ We are interested in the lab measurements of creatinine (50912), potassium (5097
 readLines(str_c(mimic_path,"/hosp/labevents.csv.gz"),n = 5L)
 ```
 
-
+**begin data processing**
 ```{r}
 item_list <- c("creatinine", "potassium", "sodium", 
                "chloride", "bicarbonate", "hematocrit", 
@@ -496,19 +496,24 @@ system.time(labevents_icu <- fread("labevents_icu.csv.gz",
 look_up <- function(x){
   labitems %>%
     filter(str_detect(label, regex(x, ignore_case = T))) %>%
-    select(itemid)
+    select(itemid,label)
 }
 find_id <- function(x){
   labevents_icu %>%
-    filter(itemid %in% as_vector(x)) %>%
+    filter(itemid %in% as_vector(x$itemid)) %>%
     count(itemid) %>%
     arrange(desc(n)) -> count
   return(count[1,1])
 }
 
+#find item id we need
+
 idkey_all <- lapply(item_list %>% as.list, look_up)
 idkey <- sapply(idkey_all, find_id)
 
+labevents_icu %<>%
+  filter(itemid %in% as_vector(idkey)) %<>%
+  left_join(Reduce(rbind, idkey_all), by = "itemid")
 
 ```
 
@@ -525,15 +530,50 @@ We are interested in the vitals for ICU patients: heart rate, mean and systolic 
 readLines(str_c(mimic_path,"/icu/chartevents.csv.gz"),n = 5L)
 ```
 
+**begin data processing**
 ```{r}
-item_list <- c("heart rate", "blood pressure", 
+item_list2 <- c("heart rate", "blood pressure", 
                "body temperature", "SpO2", "respiratory rate")
-lab_name <- c("subject_id", "hadm_id", "itemid",
+char_name <- c("subject_id", "hadm_id", "itemid",
               "charttime", "valuenum")
 
+#read and save
+
+if (!file.exists("chartevents_icu.csv.gz")){
+  system.time(chartevents <- fread(str_c(mimic_path,"/icu/chartevents.csv.gz"),
+                     select = char_name, nThread = getDTthreads()))
+  chartevents_icu %>%
+    semi_join(icustays, by = c("subject_id", "hadm_id")) %>%
+    fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
+}
+system.time(labevents_icu <- fread("chartevents_icu.csv.gz",
+                                   nThread = getDTthreads()))
+
 d_items <- fread(paste0(mimic_path,"/icu/d_items.csv.gz"))
-d_items %>%
-  filter(str_detect(label, regex(item_list, ignore_case = T)))
+
+#define lookup function
+
+look_up2 <- function(x){
+  d_items %>%
+    filter(str_detect(label, regex(x, ignore_case = T))) %>%
+    select(itemid,label)
+}
+find_id2 <- function(x){
+  chartevents_icu %>%
+    filter(itemid %in% as_vector(x$itemid)) %>%
+    count(itemid) %>%
+    arrange(desc(n)) -> count
+  return(count[1,1])
+}
+
+#find item id we need
+
+idkey_all2 <- lapply(item_list2 %>% as.list, look_up2)
+idkey2 <- sapply(idkey_all2, find_id2)
+
+chartevents_icu %<>%
+  filter(itemid %in% as_vector(idkey2)) %<>%
+  left_join(Reduce(rbind, idkey_all2), by = "itemid")
 
 ```
 
