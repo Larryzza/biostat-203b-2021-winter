@@ -472,15 +472,16 @@ readLines(str_c(mimic_path,"/hosp/labevents.csv.gz"),n = 5L)
 ```{r}
 item_list <- c("creatinine", "potassium", "sodium", 
                "chloride", "bicarbonate", "hematocrit", 
-               "white blood cell count", "glucose", 
+               "white blood cell", "glucose", 
                "magnesium", "calcium", "lactate")
 lab_name <- c("subject_id", "hadm_id", "itemid",
               "charttime", "valuenum")
 
 labitems <- fread(paste0(mimic_path,"/hosp/d_labitems.csv.gz"))
 
-  
-if (!file.exists("")){
+#read and save
+ 
+if (!file.exists("labevents_icu.csv.gz")){
   system.time(labevents <- fread(str_c(mimic_path,"/hosp/labevents.csv.gz"),
                      select = lab_name, nThread = getDTthreads()))
   labevents %>%
@@ -490,8 +491,72 @@ if (!file.exists("")){
 system.time(labevents_icu <- fread("labevents_icu.csv.gz",
                                    nThread = getDTthreads()))
 
-labitems %>%
-  filter(str_detect(label, regex("potassium", ignore_case = T)))
+#define lookup function
+
+look_up <- function(x){
+  labitems %>%
+    filter(str_detect(label, regex(x, ignore_case = T))) %>%
+    select(itemid)
+}
+find_id <- function(x){
+  labevents_icu %>%
+    filter(itemid %in% as_vector(x)) %>%
+    count(itemid) %>%
+    arrange(desc(n)) -> count
+  return(count[1,1])
+}
+
+idkey_all <- lapply(item_list %>% as.list, look_up)
+idkey <- sapply(idkey_all, find_id)
+
+
 ```
+
+## Q7. Vitals from chartered events
+
+We are interested in the vitals for ICU patients: heart rate, mean and systolic blood pressure (invasive and noninvasive measurements combined), body temperature, SpO2, and respiratory rate. Find the `itemid`s of these vitals from `d_items.csv.gz` and retrieve a subset of `chartevents.csv.gz` only containing these items.
+
+`chartevents.csv.gz` (<https://mimic-iv.mit.edu/docs/datasets/icu/chartevents/>) contains all the charted data available for a patient. During their ICU stay, the primary repository of a patient’s information is their electronic chart. The `itemid` variable indicates a single measurement type in the database. The `value` variable is the value measured for `itemid`.
+
+`d_items.csv.gz` (<https://mimic-iv.mit.edu/docs/datasets/icu/d_items/>) is the dictionary for the `itemid` in `chartevents.csv.gz`. 
+
+**Quick check the data file**
+```{r}
+readLines(str_c(mimic_path,"/icu/chartevents.csv.gz"),n = 5L)
+```
+
+```{r}
+item_list <- c("heart rate", "blood pressure", 
+               "body temperature", "SpO2", "respiratory rate")
+lab_name <- c("subject_id", "hadm_id", "itemid",
+              "charttime", "valuenum")
+
+d_items <- fread(paste0(mimic_path,"/icu/d_items.csv.gz"))
+d_items %>%
+  filter(str_detect(label, regex(item_list, ignore_case = T)))
+
+```
+
+
+## Q8. Putting things together
+
+Let us create a tibble for all ICU stays, where rows are  
+
+- first ICU stay of each unique patient  
+- adults (age at admission > 18)  
+
+and columns contain at least following variables  
+
+- all variables in `icustays.csv.gz`  
+- all variables in `admission.csv.gz`  
+- all variables in `patients.csv.gz`  
+- first lab measurements during ICU stay  
+- first vitals measurement during ICU stay  
+- an indicator variable whether the patient died within 30 days of hospital admission 
+
+```{r}
+
+```
+
 
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
