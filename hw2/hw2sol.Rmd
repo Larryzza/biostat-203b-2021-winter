@@ -469,7 +469,7 @@ readLines(str_c(mimic_path,"/hosp/labevents.csv.gz"),n = 5L)
 ```
 
 **begin data processing**
-```{r}
+```{r, eval=F}
 item_list <- c("creatinine", "potassium", "sodium", 
                "chloride", "bicarbonate", "hematocrit", 
                "white blood cell", "glucose", 
@@ -538,16 +538,15 @@ char_name <- c("subject_id", "hadm_id", "itemid",
               "charttime", "valuenum")
 
 #read and save
-
 if (!file.exists("chartevents_icu.csv.gz")){
   system.time(chartevents <- fread(str_c(mimic_path,"/icu/chartevents.csv.gz"),
-                     select = char_name, nThread = getDTthreads()))
-  chartevents_icu %>%
+                     select = char_name, nThread = 1))
+  chartevents %>%
     semi_join(icustays, by = c("subject_id", "hadm_id")) %>%
-    fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
+    fwrite("chartevents_icu.csv.gz", nThread = 1)
 }
-system.time(labevents_icu <- fread("chartevents_icu.csv.gz",
-                                   nThread = getDTthreads()))
+system.time(chartevents_icu <- fread("chartevents_icu.csv.gz",
+                                     nThread = getDTthreads()))
 
 d_items <- fread(paste0(mimic_path,"/icu/d_items.csv.gz"))
 
@@ -594,8 +593,10 @@ and columns contain at least following variables
 - first vitals measurement during ICU stay  
 - an indicator variable whether the patient died within 30 days of hospital admission 
 
-```{r}
-
+```{r, eval=F}
+icustays %>%
+  semi_join(adm, by = c("subject_id", "hadm_id")) %>%
+  semi_join(patients, by = c("subject_id", "hadm_id"))
 ```
 
 
