@@ -463,11 +463,11 @@ ggplot(patients %>%
 
 We are interested in the lab measurements of creatinine (50912), potassium (50971), sodium (50983), chloride (50902), bicarbonate (50882), hematocrit (51221), white blood cell count (51301), glucose (50931), magnesium (50960), calcium (50893), and lactate (50813). Find the `itemid`s of these lab measurements from `d_labitems.csv.gz` and retrieve a subset of `labevents.csv.gz` only containing these items.
 
+> **solution**:
 **Quick check the data file**
 ```{r}
 readLines(str_c(mimic_path,"/hosp/labevents.csv.gz"),n = 5L)
 ```
-
 **begin data processing**
 ```{r, eval=F}
 item_list <- c("creatinine", "potassium", "sodium", 
@@ -476,11 +476,9 @@ item_list <- c("creatinine", "potassium", "sodium",
                "magnesium", "calcium", "lactate")
 lab_name <- c("subject_id", "hadm_id", "itemid",
               "charttime", "valuenum")
-
-labitems <- fread(paste0(mimic_path,"/hosp/d_labitems.csv.gz"))
-
+#              
 #read and save
- 
+#
 if (!file.exists("labevents_icu.csv.gz")){
   system.time(labevents <- fread(str_c(mimic_path,"/hosp/labevents.csv.gz"),
                      select = lab_name, nThread = getDTthreads()))
@@ -488,34 +486,46 @@ if (!file.exists("labevents_icu.csv.gz")){
     semi_join(icustays, by = c("subject_id", "hadm_id")) %>%
     fwrite("labevents_icu.csv.gz", nThread = getDTthreads())
 }
+labitems <- fread(paste0(mimic_path,"/hosp/d_labitems.csv.gz"))
 system.time(labevents_icu <- fread("labevents_icu.csv.gz",
                                    nThread = getDTthreads()))
-
+#
 #define lookup function
-
-look_up <- function(x){
-  labitems %>%
+#
+look_up <- function(x,type="look_up",input=NULL){
+  if(type=="look_up"){
+    input %>%
     filter(str_detect(label, regex(x, ignore_case = T))) %>%
-    select(itemid,label)
-}
-find_id <- function(x){
-  labevents_icu %>%
+    select(itemid,label) -> lookup
+    return(lookup)
+  } else if(type=="find_id"){
+    input %>%
     filter(itemid %in% as_vector(x$itemid)) %>%
     count(itemid) %>%
     arrange(desc(n)) -> count
-  return(count[1,1])
+    return(count[1,1])
+  }
 }
-
-#find item id we need
-
-idkey_all <- lapply(item_list %>% as.list, look_up)
-idkey <- sapply(idkey_all, find_id)
-
+#
+#find data matching item id and save
+#
+idkey_all <- lapply(item_list %>% as.list, 
+                    look_up, 
+                    input = labitems)
+idkey <- sapply(idkey_all, 
+                look_up, 
+                type="find_id", 
+                input = labevents_icu)
 labevents_icu %>%
   filter(itemid %in% as_vector(idkey)) %>%
   left_join(Reduce(rbind, idkey_all), by = "itemid") %>%
   fwrite("labevents_icu.csv.gz", nThread = getDTthreads())
-
+```
+**Check the content of the processed data**
+```{r}
+chartevents_icu <- fread("labevents_icu.csv.gz",
+                         nThread = getDTthreads())
+chartevents_icu
 ```
 
 ## Q7. Vitals from chartered events
@@ -526,19 +536,20 @@ We are interested in the vitals for ICU patients: heart rate, mean and systolic 
 
 `d_items.csv.gz` (<https://mimic-iv.mit.edu/docs/datasets/icu/d_items/>) is the dictionary for the `itemid` in `chartevents.csv.gz`. 
 
+> **solution**:
 **Quick check the data file**
 ```{r}
 readLines(str_c(mimic_path,"/icu/chartevents.csv.gz"),n = 5L)
 ```
-
 **begin data processing**
 ```{r, eval=F}
 item_list2 <- c("heart rate", "blood pressure", 
                "body temperature", "SpO2", "respiratory rate")
 char_name <- c("subject_id", "hadm_id", "itemid",
               "charttime", "valuenum")
-
+#
 #read and save
+#
 if (!file.exists("chartevents_icu.csv.gz")){
   system.time(chartevents <- fread(str_c(mimic_path,"/icu/chartevents.csv.gz"),
                      select = char_name, nThread = getDTthreads()))
@@ -546,45 +557,30 @@ if (!file.exists("chartevents_icu.csv.gz")){
     semi_join(icustays, by = c("subject_id", "hadm_id")) %>%
     fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
 }
+d_items <- fread(paste0(mimic_path,"/icu/d_items.csv.gz"))
 system.time(chartevents_icu <- fread("chartevents_icu.csv.gz",
                                      nThread = getDTthreads()))
-
-d_items <- fread(paste0(mimic_path,"/icu/d_items.csv.gz"))
-
-#define lookup function
-
-look_up2 <- function(x){
-  d_items %>%
-    filter(str_detect(label, regex(x, ignore_case = T))) %>%
-    select(itemid,label)
-}
-find_id2 <- function(x){
-  chartevents_icu %>%
-    filter(itemid %in% as_vector(x$itemid)) %>%
-    count(itemid) %>%
-    arrange(desc(n)) -> count
-  return(count[1,1])
-}
-
-#find item id we need
-
-idkey_all2 <- lapply(item_list2 %>% as.list, look_up2)
-idkey2 <- sapply(idkey_all2, find_id2)
-
+#
+#find data matching item id and save
+#
+idkey_all2 <- lapply(item_list2 %>% as.list, 
+                     look_up, 
+                     input = d_items)
+idkey2 <- sapply(idkey_all2, 
+                 look_up, 
+                 type="find_id", 
+                 input = chartevents_icu)
 chartevents_icu %>%
   filter(itemid %in% as_vector(idkey2)) %>%
   left_join(Reduce(rbind, idkey_all2), by = "itemid") %>%
   fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
 ```
-
-Check the content of the processed data
+**Check the content of the processed data**
 ```{r}
-system.time(chartevents_icu <- fread("chartevents_icu.csv.gz",
-                                     nThread = getDTthreads()))
+chartevents_icu <- fread("chartevents_icu.csv.gz",
+                         nThread = getDTthreads())
 chartevents_icu
 ```
-
-
 
 ## Q8. Putting things together
 
