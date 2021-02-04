@@ -539,9 +539,9 @@ labevents_icu %>%
 ```
 **Check the content of the processed data**
 ```{r}
-chartevents_icu <- fread("labevents_icu.csv.gz",
+labevents_icu <- fread("labevents_icu.csv.gz",
                          nThread = getDTthreads())
-chartevents_icu
+labevents_icu
 ```
 
 ## Q7. Vitals from chartered events
@@ -615,10 +615,45 @@ and columns contain at least following variables
 - first vitals measurement during ICU stay  
 - an indicator variable whether the patient died within 30 days of hospital admission 
 
-```{r, eval=F}
+**solution**:
+
+```{r}
+#keep the first lab\vitals measurements
+labevents_icu %>%
+  group_by(subject_id, label) %>%
+  slice_min(charttime) %>%
+  select(-c(itemid, charttime)) %>%
+  spread(key = label, value = valuenum) -> labevents_icu
+
+chartevents_icu %>%
+  group_by(subject_id, label) %>%
+  slice_min(charttime) %>% 
+  select(-c(itemid, charttime)) %>%
+  spread(key = label, value = valuenum) -> chartevents_icu
+
+#all variables in `icustays.csv.gz`
 icustays %>%
-  semi_join(adm, by = c("subject_id", "hadm_id")) %>%
-  semi_join(patients, by = c("subject_id", "hadm_id"))
+  # first ICU stay of each unique patient 
+  group_by(subject_id) %>%
+  slice_min(intime) %>%
+  # add all variables in `admission.csv.gz` 
+  left_join(adm, by = c("subject_id", "hadm_id")) %>%
+  # add all variables in `patients.csv.gz` 
+  left_join(patients, by = "subject_id") %>%
+  mutate(age_at_adm = year(admittime) - anchor_year + anchor_age) %>%
+  # adults (age at admission > 18)
+  filter(age_at_adm >= 18) %>%
+  # add first vitals measurement during ICU stay
+  left_join(chartevents_icu, by = c("subject_id", "hadm_id")) %>%
+  # add first lab measurements during ICU stay
+  left_join(labevents_icu, by = c("subject_id", "hadm_id")) %>%
+  # indicator variable whether the patient died within 30 days of admission
+  mutate(death_30 = ifelse(hospital_expire_flag==1,
+                           "Yes", "No"))
+
+
+
+
 ```
 
 
