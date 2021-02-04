@@ -463,7 +463,8 @@ ggplot(patients %>%
 
 We are interested in the lab measurements of creatinine (50912), potassium (50971), sodium (50983), chloride (50902), bicarbonate (50882), hematocrit (51221), white blood cell count (51301), glucose (50931), magnesium (50960), calcium (50893), and lactate (50813). Find the `itemid`s of these lab measurements from `d_labitems.csv.gz` and retrieve a subset of `labevents.csv.gz` only containing these items.
 
-> **solution**:
+**solution**:
+
 **Quick check the data file**
 ```{r}
 readLines(str_c(mimic_path,"/hosp/labevents.csv.gz"),n = 5L)
@@ -536,7 +537,8 @@ We are interested in the vitals for ICU patients: heart rate, mean and systolic 
 
 `d_items.csv.gz` (<https://mimic-iv.mit.edu/docs/datasets/icu/d_items/>) is the dictionary for the `itemid` in `chartevents.csv.gz`. 
 
-> **solution**:
+**solution**:
+
 **Quick check the data file**
 ```{r}
 readLines(str_c(mimic_path,"/icu/chartevents.csv.gz"),n = 5L)

@@ -2365,9 +2365,8 @@ h1,h2,h3,h4,h5,h6{
 <h2>Q6. Lab results</h2>
 <p><code>labevents.csv.gz</code> (<a href="https://mimic-iv.mit.edu/docs/datasets/hosp/labevents/" class="uri">https://mimic-iv.mit.edu/docs/datasets/hosp/labevents/</a>) contains all laboratory measurements for patients.</p>
 <p>We are interested in the lab measurements of creatinine (50912), potassium (50971), sodium (50983), chloride (50902), bicarbonate (50882), hematocrit (51221), white blood cell count (51301), glucose (50931), magnesium (50960), calcium (50893), and lactate (50813). Find the <code>itemid</code>s of these lab measurements from <code>d_labitems.csv.gz</code> and retrieve a subset of <code>labevents.csv.gz</code> only containing these items.</p>
-<blockquote>
-<p><strong>solution</strong>: <strong>Quick check the data file</strong></p>
-</blockquote>
+<p><strong>solution</strong>:</p>
+<p><strong>Quick check the data file</strong></p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1"></a><span class="kw">readLines</span>(<span class="kw">str_c</span>(mimic_path,<span class="st">&quot;/hosp/labevents.csv.gz&quot;</span>),<span class="dt">n =</span> 5L)</span></code></pre></div>
 <pre><code>## [1] &quot;labevent_id,subject_id,hadm_id,specimen_id,itemid,charttime,storetime,value,valuenum,valueuom,ref_range_lower,ref_range_upper,flag,priority,comments&quot;
 ## [2] &quot;30331194,12455438,24471620,6107018,51277,2151-05-06 04:45:00,2151-05-06 06:24:00,13.9,13.9,%,10.5,15.5,,STAT,&quot;                                       
@@ -2447,9 +2446,8 @@ h1,h2,h3,h4,h5,h6{
 <p>We are interested in the vitals for ICU patients: heart rate, mean and systolic blood pressure (invasive and noninvasive measurements combined), body temperature, SpO2, and respiratory rate. Find the <code>itemid</code>s of these vitals from <code>d_items.csv.gz</code> and retrieve a subset of <code>chartevents.csv.gz</code> only containing these items.</p>
 <p><code>chartevents.csv.gz</code> (<a href="https://mimic-iv.mit.edu/docs/datasets/icu/chartevents/" class="uri">https://mimic-iv.mit.edu/docs/datasets/icu/chartevents/</a>) contains all the charted data available for a patient. During their ICU stay, the primary repository of a patient’s information is their electronic chart. The <code>itemid</code> variable indicates a single measurement type in the database. The <code>value</code> variable is the value measured for <code>itemid</code>.</p>
 <p><code>d_items.csv.gz</code> (<a href="https://mimic-iv.mit.edu/docs/datasets/icu/d_items/" class="uri">https://mimic-iv.mit.edu/docs/datasets/icu/d_items/</a>) is the dictionary for the <code>itemid</code> in <code>chartevents.csv.gz</code>.</p>
-<blockquote>
-<p><strong>solution</strong>: <strong>Quick check the data file</strong></p>
-</blockquote>
+<p><strong>solution</strong>:</p>
+<p><strong>Quick check the data file</strong></p>
 <div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1"></a><span class="kw">readLines</span>(<span class="kw">str_c</span>(mimic_path,<span class="st">&quot;/icu/chartevents.csv.gz&quot;</span>),<span class="dt">n =</span> 5L)</span></code></pre></div>
 <pre><code>## [1] &quot;subject_id,hadm_id,stay_id,charttime,storetime,itemid,value,valuenum,valueuom,warning&quot;         
 ## [2] &quot;19999068,21606769,31096823,2161-08-30 20:00:00,2161-08-30 19:51:00,223990,Normal,,,0&quot;          
