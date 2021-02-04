@@ -105,6 +105,7 @@ icustays %>%
 ### Q3.3 length of ICU stay
 
 > **solution**:
+**please note that we took the log scale of x-axis to present data in a more readable way**
 ```{r}
 icustays$los %>% summary
 ggplot(data = icustays) +
@@ -235,10 +236,25 @@ ggplot(adm, aes(x = admission_hour)) +
 
 ### Q4.6 number of deaths in each year 
 
+Firstly we need check whether the indicators for the death cases are consistent (`deathtime`,`hospital_expire_flag`).
+
+```{r}
+adm %>%
+  mutate(test = ifelse((is.na(deathtime)==F & 
+                          hospital_expire_flag==0)|
+                         (is.na(deathtime)==T & 
+                            hospital_expire_flag==1),1,0)) %>%
+  filter(test==1) %>%
+  select(subject_id, deathtime, 
+         hospital_expire_flag, discharge_location)
+```
+
+**Note**: We found that there are some cases whose `deathtime` is missing but `hospital_expire_flag` equals 1. Referring to the other terms (e.g. `discharge_location`), `hospital_expire_flag` is turn out to be the more presise indicator. Thus, we decided to choose **`hospital_expire_flag`** as the indicator for death cases.
+
 > **solution**:
 ```{r}
 adm %>%
-  filter(is.na(deathtime)==F) %>%
+  filter(hospital_expire_flag==1) %>%
   group_by(admission_year) %>%
   summarise(n = n(), .groups = "keep") %>%
   arrange(desc(n))
@@ -267,7 +283,6 @@ ggplot(adm) +
 ### Q4.8 number of admissions per patient 
 
 > **solution**:
-
 ```{r}
 adm %>% 
   group_by(subject_id) %>%
@@ -280,8 +295,8 @@ ggplot(number_of_ad) +
   xlab("number of admissions") +
   scale_fill_discrete(name = "number of admissions", 
                       labels = c("1", "2", "3", "4", ">=5")) +
-  xlab(NULL) +
   theme(panel.background = element_blank(),
+        axis.text.x = element_blank(),
         axis.line = element_line(colour = "black"))
 ```
 
@@ -399,7 +414,7 @@ ggplot(adm %>%
 
 > **solution**:
 ```{r}
-adm %<>% mutate(death = ifelse(is.na(deathtime)==F, "Yes", "No"))
+adm %<>% mutate(death = ifelse(hospital_expire_flag==1, "Yes", "No"))
 adm %>% 
   group_by(death) %>%
   summarise(n = n(), .groups = "keep") %>%
