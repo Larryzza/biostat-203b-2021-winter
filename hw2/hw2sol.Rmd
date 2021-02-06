@@ -19,7 +19,7 @@ h1,h2,h3,h4,h5,h6{
   font-family: "Times New Roman";
 }
 </style>
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE, cache.lazy = FALSE)
 library(tidyverse)
 library(data.table)
@@ -61,16 +61,16 @@ There are quite a few utilities in R for reading data files. Let us test the spe
 In this homework, we stick to the tidyverse. 
 
 > **solution**: 
-```{r,eval=F}
-timer <- function(fun_input){
+```{r,eval = FALSE}
+.timer <- function(fun_input){
   timestart<-Sys.time()
-  adm <- fun_input(paste0(mimic_path,"/core/admissions.csv.gz")) 
+  adm <- fun_input(str_c(mimic_path,"/core/admissions.csv.gz")) 
   timeend<-Sys.time()
   return(timeend-timestart)
 }
 lapply(list("read_csv" = read_csv,
             "read.csv" = read.csv,
-            "fread" = fread),timer)
+            "fread" = fread),.timer)
 ``` 
 `fread` is proved to be the fastest function to read the file. `read.csv` is the slowest function.
 
@@ -79,7 +79,7 @@ lapply(list("read_csv" = read_csv,
 `icustays.csv.gz` (<https://mimic-iv.mit.edu/docs/datasets/icu/icustays/>) contains data about Intensive Care Units (ICU) stays. Summarize following variables using appropriate numerics or graphs: 
 
 ```{r}
-icustays <- read_csv(paste0(mimic_path,"/icu/icustays.csv.gz"))
+icustays <- read_csv(str_c(mimic_path,"/icu/icustays.csv.gz"))
 ```
 
 ### Q3.1 how many unique `stay_id`? 
@@ -89,7 +89,7 @@ icustays <- read_csv(paste0(mimic_path,"/icu/icustays.csv.gz"))
 icustays %>% 
   distinct(stay_id) %>% 
   nrow() %>%
-  paste0(., " unique stay_id")  
+  str_c(., " unique stay_id")  
 ```
 
 ### Q3.2 how many unique `subject_id`?  
@@ -99,7 +99,7 @@ icustays %>%
 icustays %>%  
   distinct(subject_id) %>% 
   nrow() %>%
-  paste0(., " unique subject_id")
+  str_c(., " unique subject_id")
 ```
 
 ### Q3.3 length of ICU stay
@@ -109,8 +109,7 @@ icustays %>%
 ```{r}
 icustays$los %>% summary
 ggplot(data = icustays) +
-  geom_histogram(mapping = aes(x = los), bins = 150,
-                 colour = "blue", fill = "yellow") +
+  geom_histogram(mapping = aes(x = los), bins = 150) +
   scale_x_log10() +
   xlab("length of ICU stay (days)")+
   theme_classic() 
@@ -159,7 +158,7 @@ ggplot(data = icustays,
 Information of the patients admitted into hospital is available in `admissions.csv.gz`. See <https://mimic-iv.mit.edu/docs/datasets/core/admissions/> for details of each field in this file. Summarize following variables using appropriate graphs. Explain any patterns you observe.   
 
 ```{r}
-adm <- read_csv(paste0(mimic_path,"/core/admissions.csv.gz"))
+adm <- read_csv(str_c(mimic_path,"/core/admissions.csv.gz"))
 ```
 
 Note it is possible that one patient (uniquely identified by the `subject_id`) is admitted into hospital multiple times. When summarizing some demographic information, it makes sense to summarize based on unique patients.
@@ -234,6 +233,7 @@ ggplot(adm, aes(x = admission_hour)) +
   geom_bar(colour = "black", fill = "white") +
   theme_classic() 
 ```
+According to the barplot, we found that there are more admissions during the night than during the day.
 
 ### Q4.6 number of deaths in each year 
 
@@ -241,11 +241,11 @@ Firstly we need check whether the indicators for the death cases are consistent 
 
 ```{r}
 adm %>%
-  mutate(test = ifelse((is.na(deathtime)==F & 
-                          hospital_expire_flag==0)|
-                         (is.na(deathtime)==T & 
-                            hospital_expire_flag==1),1,0)) %>%
-  filter(test==1) %>%
+  mutate(test = ifelse((is.na(deathtime) == FALSE & 
+                          hospital_expire_flag == 0)|
+                         (is.na(deathtime) == TRUE & 
+                            hospital_expire_flag == 1), 1, 0)) %>%
+  filter(test == 1) %>%
   select(subject_id, deathtime, 
          hospital_expire_flag, discharge_location)
 ```
@@ -255,11 +255,11 @@ adm %>%
 > **solution**:
 ```{r}
 adm %>%
-  filter(hospital_expire_flag==1) %>%
+  filter(hospital_expire_flag == 1) %>%
   group_by(admission_year) %>%
   summarise(n = n(), .groups = "keep") %>%
   arrange(desc(n))
-ggplot(adm %>% filter(is.na(deathtime)==F), 
+ggplot(adm %>% filter(is.na(deathtime) == FALSE), 
        aes(x = admission_year)) + 
   geom_bar(colour = "black", fill = "white") +
   theme_classic()
@@ -285,11 +285,11 @@ ggplot(adm) +
 
 > **solution**:
 ```{r}
-adm %>% 
+number_of_ad <- adm %>% 
   group_by(subject_id) %>%
   summarise(n = n(), .groups = "keep") %>%
   arrange(n) %>%
-  mutate(num = ifelse(n>=5,5,n)) -> number_of_ad
+  mutate(num = ifelse(n>=5,5,n))
 number_of_ad$num %<>% ordered(levels = c("1", "2", "3", "4", "5"))
 ggplot(number_of_ad) + 
   geom_bar(mapping = aes(x = num , fill = num)) +
@@ -415,7 +415,7 @@ ggplot(adm %>%
 
 > **solution**:
 ```{r}
-adm %<>% mutate(death = ifelse(hospital_expire_flag==1, "Yes", "No"))
+adm %<>% mutate(death = ifelse(hospital_expire_flag == 1, "Yes", "No"))
 adm %>% 
   group_by(death) %>%
   summarise(n = n(), .groups = "keep") %>%
@@ -435,7 +435,7 @@ ggplot(adm) +
 Explore `patients.csv.gz` (<https://mimic-iv.mit.edu/docs/datasets/core/patients/>) and summarize following variables using appropriate numerics and graphs:  
 
 ```{r}
-patients <- read_csv(paste0(mimic_path,"/core/patients.csv.gz"))
+patients <- read_csv(str_c(mimic_path,"/core/patients.csv.gz"))
 ```
 
 ### Q5.1 `gender` 
@@ -486,7 +486,7 @@ We are interested in the lab measurements of creatinine (50912), potassium (5097
 readLines(str_c(mimic_path,"/hosp/labevents.csv.gz"),n = 5L)
 ```
 **begin data processing**
-```{r, eval=F}
+```{r, eval = FALSE}
 item_list <- c("creatinine", "potassium", "sodium", 
                "chloride", "bicarbonate", "hematocrit", 
                "white blood cell", "glucose", 
@@ -503,23 +503,22 @@ if (!file.exists("labevents_icu.csv.gz")){
     semi_join(icustays, by = c("subject_id", "hadm_id")) %>%
     fwrite("labevents_icu.csv.gz", nThread = getDTthreads())
 }
-labitems <- fread(paste0(mimic_path,"/hosp/d_labitems.csv.gz"))
+labitems <- fread(str_c(mimic_path,"/hosp/d_labitems.csv.gz"))
 system.time(labevents_icu <- fread("labevents_icu.csv.gz",
                                    nThread = getDTthreads()))
 #
 #define lookup function
 #
-look_up <- function(x,type="look_up",input=NULL){
-  if(type=="look_up"){
-    input %>%
-    filter(str_detect(label, regex(x, ignore_case = T))) %>%
-    select(itemid,label) -> lookup
+.look_up <- function(x, type = "look_up", input = NULL){
+  if(type == "look_up"){
+    lookup <- input %>%
+      filter(str_detect(label, regex(x, ignore_case = TRUE))) %>%
+      select(itemid,label) 
     return(lookup)
-  } else if(type=="find_id"){
-    input %>%
-    filter(itemid %in% as_vector(x$itemid)) %>%
-    count(itemid) %>%
-    arrange(desc(n)) -> count
+  } else if(type == "find_id"){
+    count <- input %>%
+      filter(itemid %in% as_vector(x$itemid)) %>%
+      arrange(desc(n))
     return(count[1,1])
   }
 }
@@ -527,10 +526,10 @@ look_up <- function(x,type="look_up",input=NULL){
 #find data matching item id and save
 #
 idkey_all <- lapply(item_list %>% as.list, 
-                    look_up, 
+                    .look_up, 
                     input = labitems)
 idkey <- sapply(idkey_all, 
-                look_up, 
+                .look_up, 
                 type="find_id", 
                 input = labevents_icu)
 labevents_icu %>%
@@ -560,7 +559,7 @@ We are interested in the vitals for ICU patients: heart rate, mean and systolic 
 readLines(str_c(mimic_path,"/icu/chartevents.csv.gz"),n = 5L)
 ```
 **begin data processing**
-```{r, eval=F}
+```{r, eval = FALSE}
 item_list2 <- c("heart rate", "blood pressure", 
                "body temperature", "SpO2", "respiratory rate")
 char_name <- c("subject_id", "hadm_id", "itemid",
@@ -575,17 +574,17 @@ if (!file.exists("chartevents_icu.csv.gz")){
     semi_join(icustays, by = c("subject_id", "hadm_id")) %>%
     fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
 }
-d_items <- fread(paste0(mimic_path,"/icu/d_items.csv.gz"))
+d_items <- fread(str_c(mimic_path,"/icu/d_items.csv.gz"))
 system.time(chartevents_icu <- fread("chartevents_icu.csv.gz",
                                      nThread = getDTthreads()))
 #
 #find data matching item id and save
 #
 idkey_all2 <- lapply(item_list2 %>% as.list, 
-                     look_up, 
+                     .look_up, 
                      input = d_items)
 idkey2 <- sapply(idkey_all2, 
-                 look_up, 
+                 .look_up, 
                  type="find_id", 
                  input = chartevents_icu)
 chartevents_icu %>%
@@ -619,32 +618,32 @@ and columns contain at least following variables
 **solution**:
 
 ```{r}
-
+which(duplicated(labevents_icu) == TRUE)%>%length
+which(duplicated(chartevents_icu) == TRUE)%>%length
 ```
-
-We found that there are some patients have more than one record at a single time point. Thus, we need to only keep one record.
+After a quick check, we found that there are some patients have more than one record at a single time point (duplicated resords). Thus, we need to only keep one record.
 
 ```{r}
 #keep the first lab\vitals measurements
-labevents_icu %>%
+labevents_icu <- labevents_icu %>%
   group_by(subject_id, label) %>%
   slice_min(charttime) %>%
   slice(1) %>%
   select(-c(charttime,itemid)) %>%
-  spread(key = label, value = valuenum) -> labevents_icu
+  spread(key = label, value = valuenum)
 
-chartevents_icu %>%
+chartevents_icu <- chartevents_icu %>%
   group_by(subject_id, label) %>%
   slice_min(charttime) %>%
   slice(1) %>%
   select(-c(charttime,itemid)) %>%
-  spread(key = label, value = valuenum) -> chartevents_icu
+  spread(key = label, value = valuenum) 
 ```
 
 Then we can prepare the final dataset
 ```{r}
 #all variables in `icustays.csv.gz`
-icustays %>%
+final_icu_dataset <- icustays %>%
   # first ICU stay of each unique patient 
   group_by(subject_id) %>%
   slice_min(intime) %>%
@@ -660,17 +659,20 @@ icustays %>%
   # add first lab measurements during ICU stay
   left_join(labevents_icu, by = c("subject_id", "hadm_id")) %>%
   # filter out all death cases [indicator: "hospital_expire_flag"]
-  mutate(death_binary = ifelse(hospital_expire_flag==1, "Yes", "No")) %>%
+  mutate(death_binary = ifelse(hospital_expire_flag == 1, "Yes", "No")) %>%
   # indicator variable whether the patient died within 30 days of admission
-  mutate(death_30 = ifelse(deathtime - intime <= 30,
-                           "Yes", "No")) -> final_icu_dataset
+  mutate(death_30 = ifelse(deathtime - intime <= 30, "Yes", "No"))
 
-print(final_icu_dataset, width=Inf)
+print(final_icu_dataset, width = Inf)
 
+```
+
+Set NA as "No" in indicator variable and compare with with `death_binary`
+```{r}
 final_icu_dataset %>%
-  ungroup()%>% 
+  ungroup() %>% 
+  mutate_at(vars(death_30), funs(ifelse(is.na(.) == TRUE, "No", .))) %>% 
   count(death_30, death_binary)
-
 ```
 
 
