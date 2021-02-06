@@ -1,7 +1,7 @@
 ---
 title: "Biostat 203B Homework 1"
 author: Zian ZHUANG
-subtitle: Due Jan 22 @ 11:59PM
+subtitle: Due Feb 10 @ 11:59PM
 output:
   html_document:
     highlight: pygments
@@ -440,7 +440,7 @@ patients <- read_csv(str_c(mimic_path,"/core/patients.csv.gz"))
 
 ### Q5.1 `gender` 
 
-> **solution**:
+> **solution**: (summarized based on unique patients)
 ```{r}
 patients %>% 
   distinct(subject_id, .keep_all = TRUE) %>%
@@ -460,7 +460,7 @@ ggplot(patients %>%
 ### Q5.2 `anchor_age` 
 (explain pattern you see)
 
-> **solution**: According to the summary statistics, the mean anchor age of patients are 41. And figure presents that the anchor age of patients has two peak at 0 and 25 respectively. Very few patients have anchor age at around 10.
+> **solution**: (summarized based on unique patients)
 ```{r}
 patients %>% 
   distinct(subject_id, .keep_all = TRUE) %>%
@@ -470,6 +470,16 @@ ggplot(patients %>%
   distinct(subject_id, .keep_all = TRUE)) + 
   geom_density(mapping = aes(x = anchor_age)) +
   xlab("anchor_age")+
+  theme_classic() 
+```
+According to the summary statistics, the mean anchor age of patients are 41. And figure presents that the anchor age of patients has two peak at 0 and 25 respectively. Very few patients have anchor age at around 10. Then we presumed that the peak in age 0 should be correspond to the missing data or some corrupted data. Thus, we filter out the anchor_age which equals 0 and plot again.
+```{r}
+patients %>% 
+  distinct(subject_id, .keep_all = TRUE) %>%
+  filter(anchor_age != 0) %>%
+  ggplot() +
+  geom_density(mapping = aes(x = anchor_age)) +
+  xlab("anchor_age (filter out 0 value)")+
   theme_classic() 
 ```
 
@@ -618,8 +628,8 @@ and columns contain at least following variables
 **solution**:
 
 ```{r}
-which(duplicated(labevents_icu) == TRUE)%>%length
-which(duplicated(chartevents_icu) == TRUE)%>%length
+which(duplicated(labevents_icu) == TRUE) %>% length
+which(duplicated(chartevents_icu) == TRUE) %>% length
 ```
 After a quick check, we found that there are some patients have more than one record at a single time point (duplicated resords). Thus, we need to only keep one record.
 
