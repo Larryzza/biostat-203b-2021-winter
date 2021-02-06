@@ -37,9 +37,9 @@ sessionInfo()
 os <- sessionInfo()$running
 if (str_detect(os, "Linux")) {
   mimic_path <- "/usr/203b-data/mimic-iv"
-} else if (str_detect(os, "macOS")) {
-  mimic_path <- "Please double check your path"
-} else {mimic_path <- "."}
+} else if (str_detect(os, "Windows")) {
+  mimic_path <- "."
+}
 ```
 Use tidyverse (ggpot2, dplyr) to explore the [MIMIC-IV](https://mimic-iv.mit.edu) data introduced in [homework 1](https://ucla-biostat203b-2021winter.github.io/hw/hw1/hw1.html).
 
@@ -52,7 +52,7 @@ system(str_c("tree -s -L 2 ", shQuote(mimic_path)), intern = TRUE)
 ### Q1.1
 At this moment, you should already get credentialed on the PhysioNet. Please include a screenshot of your `Data Use Agreement for the MIMIC-IV (v0.4)`.
 
-> **solution**: ![screenshot](/home/zianzhuang/biostat-203b-2021-winter/hw2/agreement.png)
+> **solution**: ![screenshot](agreement.png)
  
 ## Q2. `read.csv` (base R) vs `read_csv` (tidyverse) vs `fread` (data.table)
 
@@ -63,14 +63,14 @@ In this homework, we stick to the tidyverse.
 > **solution**: 
 ```{r,eval = FALSE}
 .timer <- function(fun_input){
-  timestart<-Sys.time()
-  adm <- fun_input(str_c(mimic_path,"/core/admissions.csv.gz")) 
-  timeend<-Sys.time()
-  return(timeend-timestart)
+  timestart <- Sys.time()
+  adm <- fun_input(str_c(mimic_path, "/core/admissions.csv.gz")) 
+  timeend <- Sys.time()
+  return(timeend - timestart)
 }
 lapply(list("read_csv" = read_csv,
             "read.csv" = read.csv,
-            "fread" = fread),.timer)
+            "fread" = fread), .timer)
 ``` 
 `fread` is proved to be the fastest function to read the file. `read.csv` is the slowest function.
 
@@ -479,7 +479,7 @@ patients %>%
   filter(anchor_age != 0) %>%
   ggplot() +
   geom_density(mapping = aes(x = anchor_age)) +
-  xlab("anchor_age (filter out 0 value)")+
+  xlab("anchor_age (filter out 0)")+
   theme_classic() 
 ```
 
@@ -495,7 +495,7 @@ We are interested in the lab measurements of creatinine (50912), potassium (5097
 ```{r}
 readLines(str_c(mimic_path,"/hosp/labevents.csv.gz"),n = 5L)
 ```
-**begin data processing**
+**Begin data processing**
 ```{r, eval = FALSE}
 item_list <- c("creatinine", "potassium", "sodium", 
                "chloride", "bicarbonate", "hematocrit", 
@@ -528,8 +528,9 @@ system.time(labevents_icu <- fread("labevents_icu.csv.gz",
   } else if(type == "find_id"){
     count <- input %>%
       filter(itemid %in% as_vector(x$itemid)) %>%
-      arrange(desc(n))
-    return(count[1,1])
+      count(itemid) %>%
+      arrange(desc(n)) %>% .[1,1]
+    return(count)
   }
 }
 #
@@ -542,14 +543,16 @@ idkey <- sapply(idkey_all,
                 .look_up, 
                 type="find_id", 
                 input = labevents_icu)
-labevents_icu %>%
+if (!file.exists("labevents_icu_selected.csv.gz")){
+  labevents_icu %>%
   filter(itemid %in% as_vector(idkey)) %>%
   left_join(Reduce(rbind, idkey_all), by = "itemid") %>%
-  fwrite("labevents_icu.csv.gz", nThread = getDTthreads())
+  fwrite("labevents_icu_selected.csv.gz", nThread = getDTthreads())
+}
 ```
 **Check the content of the processed data**
 ```{r}
-labevents_icu <- fread("labevents_icu.csv.gz",
+labevents_icu <- fread("labevents_icu_selected.csv.gz",
                          nThread = getDTthreads())
 labevents_icu
 ```
@@ -568,7 +571,7 @@ We are interested in the vitals for ICU patients: heart rate, mean and systolic 
 ```{r}
 readLines(str_c(mimic_path,"/icu/chartevents.csv.gz"),n = 5L)
 ```
-**begin data processing**
+**Begin data processing**
 ```{r, eval = FALSE}
 item_list2 <- c("heart rate", "blood pressure", 
                "body temperature", "SpO2", "respiratory rate")
@@ -597,14 +600,16 @@ idkey2 <- sapply(idkey_all2,
                  .look_up, 
                  type="find_id", 
                  input = chartevents_icu)
-chartevents_icu %>%
+if (!file.exists("chartevents_icu_selected.csv.gz")){
+  chartevents_icu %>%
   filter(itemid %in% as_vector(idkey2)) %>%
   left_join(Reduce(rbind, idkey_all2), by = "itemid") %>%
-  fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
+  fwrite("chartevents_icu_selected.csv.gz", nThread = getDTthreads())
+}
 ```
 **Check the content of the processed data**
 ```{r}
-chartevents_icu <- fread("chartevents_icu.csv.gz",
+chartevents_icu <- fread("chartevents_icu_selected.csv.gz",
                          nThread = getDTthreads())
 chartevents_icu
 ```
