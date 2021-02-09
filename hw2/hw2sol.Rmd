@@ -573,8 +573,10 @@ readLines(str_c(mimic_path,"/icu/chartevents.csv.gz"),n = 5L)
 ```
 **Begin data processing**
 ```{r, eval = FALSE}
-item_list2 <- c("heart rate", "blood pressure", 
-               "body temperature", "SpO2", "respiratory rate")
+item_list2 <- c("heart rate", "arterial blood pressure systolic", 
+                "arterial blood pressure mean", "invasive blood pressure mean",
+                "invasive blood pressure systolic", "temperature", 
+                "SpO2", "respiratory rate")
 char_name <- c("subject_id", "hadm_id", "itemid",
               "charttime", "valuenum")
 #
