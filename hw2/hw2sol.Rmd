@@ -644,9 +644,9 @@ which(duplicated(chartevents_icu) == TRUE) %>% length
 ```
 After a quick check, we found that there are some patients have more than one record at a single time point (duplicated resords). Thus, we need to only keep one record.
 
-```{r, eval=F}
+```{r}
 #keep the first lab\vitals measurements
-labevents_icu <- labevents_icu %>%
+labevents_icu %>%
   mutate_at(vars(charttime), ymd_hms) %>%
   left_join(icustays %>% 
               select(c("subject_id", "hadm_id", "intime")), 
@@ -656,9 +656,10 @@ labevents_icu <- labevents_icu %>%
   arrange(charttime, .by_group = FALSE) %>%
   slice_head(n = 1) %>%
   select(-c(charttime, itemid, intime)) %>%
-  spread(key = label, value = valuenum)
+  spread(key = label, value = valuenum) %>%
+  fwrite("labevents_icu_final.csv.gz", nThread = getDTthreads())
 
-chartevents_icu <- chartevents_icu %>%
+chartevents_icu %>%
   mutate_at(vars(charttime), ymd_hms) %>%
   left_join(icustays %>% 
               select(c("subject_id", "hadm_id", "intime")), 
@@ -668,11 +669,16 @@ chartevents_icu <- chartevents_icu %>%
   arrange(charttime, .by_group = FALSE) %>%
   slice_head(n = 1) %>%
   select(-c(charttime, itemid, intime)) %>%
-  spread(key = label, value = valuenum) 
+  spread(key = label, value = valuenum) %>%
+  fwrite("chartevents_icu_final.csv.gz", nThread = getDTthreads())
 ```
 
 Then we can prepare the final dataset
 ```{r}
+labevents_icu <- fread("labevents_icu_final.csv.gz",
+                         nThread = getDTthreads())
+chartevents_icu <- fread("chartevents_icu_final.csv.gz",
+                         nThread = getDTthreads())
 #all variables in `icustays.csv.gz`
 final_icu_dataset <- icustays %>%
   # first ICU stay of each unique patient 
