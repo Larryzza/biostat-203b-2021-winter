@@ -61,7 +61,7 @@ There are quite a few utilities in R for reading data files. Let us test the spe
 In this homework, we stick to the tidyverse. 
 
 > **solution**: 
-```{r,eval = FALSE}
+```{r, eval = FALSE}
 .timer <- function(fun_input){
   timestart <- Sys.time()
   adm <- fun_input(str_c(mimic_path, "/core/admissions.csv.gz")) 
@@ -79,7 +79,7 @@ lapply(list("read_csv" = read_csv,
 `icustays.csv.gz` (<https://mimic-iv.mit.edu/docs/datasets/icu/icustays/>) contains data about Intensive Care Units (ICU) stays. Summarize following variables using appropriate numerics or graphs: 
 
 ```{r}
-icustays <- read_csv(str_c(mimic_path,"/icu/icustays.csv.gz"))
+icustays <- read_csv(str_c(mimic_path, "/icu/icustays.csv.gz"))
 ```
 
 ### Q3.1 how many unique `stay_id`? 
@@ -158,7 +158,7 @@ ggplot(data = icustays,
 Information of the patients admitted into hospital is available in `admissions.csv.gz`. See <https://mimic-iv.mit.edu/docs/datasets/core/admissions/> for details of each field in this file. Summarize following variables using appropriate graphs. Explain any patterns you observe.   
 
 ```{r}
-adm <- read_csv(str_c(mimic_path,"/core/admissions.csv.gz"))
+adm <- read_csv(str_c(mimic_path, "/core/admissions.csv.gz"))
 ```
 
 Note it is possible that one patient (uniquely identified by the `subject_id`) is admitted into hospital multiple times. When summarizing some demographic information, it makes sense to summarize based on unique patients.
@@ -289,7 +289,7 @@ number_of_ad <- adm %>%
   group_by(subject_id) %>%
   summarise(n = n(), .groups = "keep") %>%
   arrange(n) %>%
-  mutate(num = ifelse(n>=5,5,n))
+  mutate(num = ifelse(n>=5, 5, n))
 number_of_ad$num %<>% ordered(levels = c("1", "2", "3", "4", "5"))
 ggplot(number_of_ad) + 
   geom_bar(mapping = aes(x = num , fill = num)) +
@@ -435,7 +435,7 @@ ggplot(adm) +
 Explore `patients.csv.gz` (<https://mimic-iv.mit.edu/docs/datasets/core/patients/>) and summarize following variables using appropriate numerics and graphs:  
 
 ```{r}
-patients <- read_csv(str_c(mimic_path,"/core/patients.csv.gz"))
+patients <- read_csv(str_c(mimic_path, "/core/patients.csv.gz"))
 ```
 
 ### Q5.1 `gender` 
@@ -472,7 +472,9 @@ ggplot(patients %>%
   xlab("anchor_age")+
   theme_classic() 
 ```
+
 According to the summary statistics, the mean anchor age of patients are 41. And figure presents that the anchor age of patients has two peak at 0 and 25 respectively. Very few patients have anchor age at around 10. Then we presumed that the peak in age 0 should be correspond to the missing data or some corrupted data. Thus, we filter out the anchor_age which equals 0 and plot again.
+
 ```{r}
 patients %>% 
   distinct(subject_id, .keep_all = TRUE) %>%
@@ -493,7 +495,7 @@ We are interested in the lab measurements of creatinine (50912), potassium (5097
 
 **Quick check the data file**
 ```{r}
-readLines(str_c(mimic_path,"/hosp/labevents.csv.gz"),n = 5L)
+readLines(str_c(mimic_path, "/hosp/labevents.csv.gz"), n = 5L)
 ```
 **Begin data processing**
 ```{r, eval = FALSE}
@@ -507,13 +509,13 @@ lab_name <- c("subject_id", "hadm_id", "itemid",
 #read and save
 #
 if (!file.exists("labevents_icu.csv.gz")){
-  system.time(labevents <- fread(str_c(mimic_path,"/hosp/labevents.csv.gz"),
+  system.time(labevents <- fread(str_c(mimic_path, "/hosp/labevents.csv.gz"),
                      select = lab_name, nThread = getDTthreads()))
   labevents %>%
     semi_join(icustays, by = c("subject_id", "hadm_id")) %>%
     fwrite("labevents_icu.csv.gz", nThread = getDTthreads())
 }
-labitems <- fread(str_c(mimic_path,"/hosp/d_labitems.csv.gz"))
+labitems <- fread(str_c(mimic_path, "/hosp/d_labitems.csv.gz"))
 system.time(labevents_icu <- fread("labevents_icu.csv.gz",
                                    nThread = getDTthreads()))
 #
@@ -523,13 +525,13 @@ system.time(labevents_icu <- fread("labevents_icu.csv.gz",
   if(type == "look_up"){
     lookup <- input %>%
       filter(str_detect(label, regex(x, ignore_case = TRUE))) %>%
-      select(itemid,label) 
+      select(itemid, label) 
     return(lookup)
   } else if(type == "find_id"){
     count <- input %>%
       filter(itemid %in% as_vector(x$itemid)) %>%
       count(itemid) %>%
-      arrange(desc(n)) %>% .[1,1]
+      arrange(desc(n)) %>% .[1, 1]
     return(count)
   }
 }
@@ -569,12 +571,13 @@ We are interested in the vitals for ICU patients: heart rate, mean and systolic 
 
 **Quick check the data file**
 ```{r}
-readLines(str_c(mimic_path,"/icu/chartevents.csv.gz"),n = 5L)
+readLines(str_c(mimic_path, "/icu/chartevents.csv.gz"), n = 5L)
 ```
 **Begin data processing**
 ```{r, eval = FALSE}
 item_list2 <- c("heart rate", "arterial blood pressure systolic", 
-                "arterial blood pressure mean", "invasive blood pressure mean",
+                "arterial blood pressure mean", 
+                "invasive blood pressure mean",
                 "invasive blood pressure systolic", "temperature", 
                 "SpO2", "respiratory rate")
 char_name <- c("subject_id", "hadm_id", "itemid",
@@ -583,13 +586,14 @@ char_name <- c("subject_id", "hadm_id", "itemid",
 #read and save
 #
 if (!file.exists("chartevents_icu.csv.gz")){
-  system.time(chartevents <- fread(str_c(mimic_path,"/icu/chartevents.csv.gz"),
+  system.time(chartevents <- fread(str_c(mimic_path, 
+                                         "/icu/chartevents.csv.gz"),
                      select = char_name, nThread = getDTthreads()))
   chartevents %>%
     semi_join(icustays, by = c("subject_id", "hadm_id")) %>%
     fwrite("chartevents_icu.csv.gz", nThread = getDTthreads())
 }
-d_items <- fread(str_c(mimic_path,"/icu/d_items.csv.gz"))
+d_items <- fread(str_c(mimic_path, "/icu/d_items.csv.gz"))
 system.time(chartevents_icu <- fread("chartevents_icu.csv.gz",
                                      nThread = getDTthreads()))
 #
@@ -640,20 +644,30 @@ which(duplicated(chartevents_icu) == TRUE) %>% length
 ```
 After a quick check, we found that there are some patients have more than one record at a single time point (duplicated resords). Thus, we need to only keep one record.
 
-```{r}
+```{r, eval=F}
 #keep the first lab\vitals measurements
 labevents_icu <- labevents_icu %>%
+  mutate_at(vars(charttime), ymd_hms) %>%
+  left_join(icustays %>% 
+              select(c("subject_id", "hadm_id", "intime")), 
+            by = c("subject_id", "hadm_id")) %>%
+  filter(charttime >= intime) %>%
   group_by(subject_id, label) %>%
-  slice_min(charttime) %>%
-  slice(1) %>%
-  select(-c(charttime,itemid)) %>%
+  arrange(charttime, .by_group = FALSE) %>%
+  slice_head(n = 1) %>%
+  select(-c(charttime, itemid, intime)) %>%
   spread(key = label, value = valuenum)
 
 chartevents_icu <- chartevents_icu %>%
+  mutate_at(vars(charttime), ymd_hms) %>%
+  left_join(icustays %>% 
+              select(c("subject_id", "hadm_id", "intime")), 
+            by = c("subject_id", "hadm_id")) %>%
+  filter(charttime >= intime) %>%
   group_by(subject_id, label) %>%
-  slice_min(charttime) %>%
-  slice(1) %>%
-  select(-c(charttime,itemid)) %>%
+  arrange(charttime, .by_group = FALSE) %>%
+  slice_head(n = 1) %>%
+  select(-c(charttime, itemid, intime)) %>%
   spread(key = label, value = valuenum) 
 ```
 
