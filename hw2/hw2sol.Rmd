@@ -643,17 +643,27 @@ After a quick check, we found that there are some patients have more than one re
 ```{r}
 #keep the first lab\vitals measurements
 labevents_icu <- labevents_icu %>%
+  mutate_at(vars(charttime), ymd_hms) %>%
+  left_join(icustays %>% 
+              select(c("subject_id", "hadm_id", "intime")), 
+            by = c("subject_id", "hadm_id")) %>%
+  filter(charttime >= intime) %>%
   group_by(subject_id, label) %>%
-  slice_min(charttime) %>%
-  slice(1) %>%
-  select(-c(charttime,itemid)) %>%
+  arrange(charttime, .by_group = FALSE) %>%
+  slice_head(n = 1) %>%
+  select(-c(charttime, itemid, intime)) %>%
   spread(key = label, value = valuenum)
 
 chartevents_icu <- chartevents_icu %>%
+  mutate_at(vars(charttime), ymd_hms) %>%
+  left_join(icustays %>% 
+              select(c("subject_id", "hadm_id", "intime")), 
+            by = c("subject_id", "hadm_id")) %>%
+  filter(charttime >= intime) %>%
   group_by(subject_id, label) %>%
-  slice_min(charttime) %>%
-  slice(1) %>%
-  select(-c(charttime,itemid)) %>%
+  arrange(charttime, .by_group = FALSE) %>%
+  slice_head(n = 1) %>%
+  select(-c(charttime, itemid, intime)) %>%
   spread(key = label, value = valuenum) 
 ```
 
