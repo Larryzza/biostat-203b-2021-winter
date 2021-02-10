@@ -644,7 +644,7 @@ which(duplicated(chartevents_icu) == TRUE) %>% length
 ```
 After a quick check, we found that there are some patients have more than one record at a single time point (duplicated resords). Thus, we need to only keep one record.
 
-```{r}
+```{r, eval = FALSE}
 #keep the first lab\vitals measurements
 labevents_icu %>%
   mutate_at(vars(charttime), ymd_hms) %>%
@@ -675,6 +675,7 @@ chartevents_icu %>%
 
 Then we can prepare the final dataset
 ```{r}
+#read in data
 labevents_icu <- fread("labevents_icu_final.csv.gz",
                          nThread = getDTthreads())
 chartevents_icu <- fread("chartevents_icu_final.csv.gz",
