@@ -2787,21 +2787,9 @@ h1,h2,h3,h4,h5,h6{
 <p>Set NA as “No” in indicator variable and compare with with <code>death_binary</code></p>
 <div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1"></a>final_icu_dataset <span class="op">%&gt;%</span></span>
 <span id="cb97-2"><a href="#cb97-2"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb97-3"><a href="#cb97-3"></a><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(death_<span class="dv">30</span>), <span class="kw">funs</span>(<span class="kw">ifelse</span>(<span class="kw">is.na</span>(.) <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>, <span class="st">&quot;No&quot;</span>, .))) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb97-4"><a href="#cb97-4"></a><span class="st">  </span><span class="kw">count</span>(death_<span class="dv">30</span>, death_binary)</span></code></pre></div>
-<pre><code>## Warning: `funs()` is deprecated as of dplyr 0.8.0.
-## Please use a list of either functions or lambdas: 
-## 
-##   # Simple named list: 
-##   list(mean = mean, median = median)
-## 
-##   # Auto named with `tibble::lst()`: 
-##   tibble::lst(mean, median)
-## 
-##   # Using lambdas
-##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<span id="cb97-3"><a href="#cb97-3"></a><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(death_<span class="dv">30</span>), </span>
+<span id="cb97-4"><a href="#cb97-4"></a>            <span class="cf">function</span>(x){<span class="kw">ifelse</span>(<span class="kw">is.na</span>(x) <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>, <span class="st">&quot;No&quot;</span>, x)}) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb97-5"><a href="#cb97-5"></a><span class="st">  </span><span class="kw">count</span>(death_<span class="dv">30</span>, death_binary)</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   death_30 death_binary     n
 ##   &lt;chr&gt;    &lt;chr&gt;        &lt;int&gt;

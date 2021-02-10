@@ -709,7 +709,8 @@ Set NA as "No" in indicator variable and compare with with `death_binary`
 ```{r}
 final_icu_dataset %>%
   ungroup() %>% 
-  mutate_at(vars(death_30), funs(ifelse(is.na(.) == TRUE, "No", .))) %>% 
+  mutate_at(vars(death_30), 
+            function(x){ifelse(is.na(x) == TRUE, "No", x)}) %>% 
   count(death_30, death_binary)
 ```
 
