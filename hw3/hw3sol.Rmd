@@ -33,6 +33,7 @@ Display machine information for reproducibility:
 sessionInfo()
 ```
 
+
 ```{r}
 os <- sessionInfo()$running
 if (str_detect(os, "Linux")) {
