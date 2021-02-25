@@ -152,7 +152,7 @@ icustays_tble %>%
   mutate_at(vars(death_30), 
             function(x){ifelse(is.na(x) == TRUE, "No", x)}) %>% 
   # save the final tibble
-  save(file = "./mimiciv_shiny/icu_cohort.rds")
+  saveRDS(file = "./mimiciv_shiny/icu_cohort.rds")
 ```
 
 

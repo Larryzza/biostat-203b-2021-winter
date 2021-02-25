@@ -1636,21 +1636,21 @@ h1,h2,h3,h4,h5,h6{
 ##  [1] magrittr_2.0.1    data.table_1.13.6 lubridate_1.7.9.2 forcats_0.5.0    
 ##  [5] stringr_1.4.0     dplyr_1.0.2       purrr_0.3.4       readr_1.4.0      
 ##  [9] tidyr_1.1.2       tibble_3.0.4      ggplot2_3.3.3     tidyverse_1.3.0  
-## [13] RPostgreSQL_0.6-2 DBI_1.1.1        
+## [13] RPostgreSQL_0.6-2 dbplyr_2.0.0      DBI_1.1.1        
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.5        cellranger_1.1.0  pillar_1.4.7      compiler_3.6.0   
-##  [5] dbplyr_2.0.0      tools_3.6.0       digest_0.6.27     jsonlite_1.7.2   
-##  [9] evaluate_0.14     lifecycle_0.2.0   gtable_0.3.0      pkgconfig_2.0.3  
-## [13] rlang_0.4.10      reprex_0.3.0      cli_2.2.0         rstudioapi_0.13  
-## [17] yaml_2.2.1        haven_2.3.1       xfun_0.19         withr_2.3.0      
-## [21] xml2_1.3.2        httr_1.4.2        knitr_1.30        fs_1.5.0         
-## [25] hms_0.5.3         generics_0.1.0    vctrs_0.3.6       grid_3.6.0       
-## [29] tidyselect_1.1.0  glue_1.4.2        R6_2.5.0          fansi_0.4.1      
-## [33] readxl_1.3.1      rmarkdown_2.6     modelr_0.1.8      backports_1.2.1  
-## [37] scales_1.1.1      ellipsis_0.3.1    htmltools_0.5.1.1 rvest_0.3.6      
-## [41] assertthat_0.2.1  colorspace_2.0-0  stringi_1.5.3     munsell_0.5.0    
-## [45] broom_0.7.3       crayon_1.3.4</code></pre>
+##  [5] tools_3.6.0       digest_0.6.27     jsonlite_1.7.2    evaluate_0.14    
+##  [9] lifecycle_0.2.0   gtable_0.3.0      pkgconfig_2.0.3   rlang_0.4.10     
+## [13] reprex_0.3.0      cli_2.2.0         rstudioapi_0.13   yaml_2.2.1       
+## [17] haven_2.3.1       xfun_0.19         withr_2.3.0       xml2_1.3.2       
+## [21] httr_1.4.2        knitr_1.30        fs_1.5.0          hms_0.5.3        
+## [25] generics_0.1.0    vctrs_0.3.6       grid_3.6.0        tidyselect_1.1.0 
+## [29] glue_1.4.2        R6_2.5.0          fansi_0.4.1       readxl_1.3.1     
+## [33] rmarkdown_2.6     modelr_0.1.8      backports_1.2.1   scales_1.1.1     
+## [37] ellipsis_0.3.1    htmltools_0.5.1.1 rvest_0.3.6       assertthat_0.2.1 
+## [41] colorspace_2.0-0  stringi_1.5.3     munsell_0.5.0     broom_0.7.3      
+## [45] crayon_1.3.4</code></pre>
 <div id="q1.-compile-the-icu-cohort-in-hw2-q8-from-the-postgresql-database-mimiciv." class="section level2">
 <h2>Q1. Compile the ICU cohort in HW2 Q8 from the PostgreSQL database <code>mimiciv</code>.</h2>
 <p>Below is an outline of steps.</p>
@@ -1880,52 +1880,52 @@ h1,h2,h3,h4,h5,h6{
 ## # Database: postgres 10.0.16 [postgres@/var/run/postgresql:5432/mimiciv]
 ##    subject_id  hadm_id admittime           dischtime          
 ##         &lt;int&gt;    &lt;int&gt; &lt;dttm&gt;              &lt;dttm&gt;             
-##  1   19153227 25485123 2162-10-27 20:54:00 2162-10-28 09:30:00
-##  2   18258071 25333894 2115-09-10 21:19:00 2115-09-14 19:25:00
-##  3   19797689 23144862 2189-07-26 16:53:00 2189-07-31 17:52:00
-##  4   12924058 27045049 2153-10-26 18:52:00 2153-10-28 16:47:00
-##  5   13039405 24886819 2155-05-14 07:45:00 2155-05-14 12:30:00
-##  6   12827547 24393990 2135-03-23 19:29:00 2135-03-30 16:23:00
-##  7   12995867 22470516 2157-01-05 16:28:00 2157-01-09 14:33:00
-##  8   16241655 25020885 2121-06-24 17:25:00 2121-06-28 17:43:00
-##  9   12943436 22254869 2165-09-26 19:00:00 2165-10-18 12:15:00
-## 10   16990734 29884037 2155-08-19 08:21:00 2155-08-23 17:30:00
-##    deathtime           admission_type    admission_location    
-##    &lt;dttm&gt;              &lt;chr&gt;             &lt;chr&gt;                 
-##  1 NA                  EW EMER.          EMERGENCY ROOM        
-##  2 NA                  EW EMER.          EMERGENCY ROOM        
-##  3 NA                  URGENT            TRANSFER FROM HOSPITAL
-##  4 NA                  EW EMER.          EMERGENCY ROOM        
-##  5 NA                  ELECTIVE          PHYSICIAN REFERRAL    
-##  6 NA                  OBSERVATION ADMIT EMERGENCY ROOM        
-##  7 NA                  OBSERVATION ADMIT EMERGENCY ROOM        
-##  8 NA                  OBSERVATION ADMIT EMERGENCY ROOM        
-##  9 NA                  DIRECT EMER.      PHYSICIAN REFERRAL    
-## 10 NA                  EW EMER.          EMERGENCY ROOM        
+##  1   12564853 29480767 2191-08-15 12:30:00 2191-08-19 16:00:00
+##  2   15256385 24552874 2178-12-13 21:05:00 2178-12-18 17:03:00
+##  3   10266130 22931388 2164-02-01 01:00:00 2164-02-05 21:45:00
+##  4   18965447 22097668 2130-05-26 22:55:00 2130-05-29 17:30:00
+##  5   13290343 26966175 2149-05-27 01:22:00 2149-06-03 18:53:00
+##  6   17445095 21965590 2125-04-01 19:24:00 2125-04-07 22:02:00
+##  7   18397600 22103595 2123-05-27 20:49:00 2123-05-31 13:53:00
+##  8   12135031 22848862 2140-02-05 11:27:00 2140-02-07 15:39:00
+##  9   15584013 27324679 2129-11-08 07:53:00 2129-11-13 19:38:00
+## 10   14821269 20030294 2191-10-15 02:53:00 2191-10-22 20:11:00
+##    deathtime           admission_type              admission_location    
+##    &lt;dttm&gt;              &lt;chr&gt;                       &lt;chr&gt;                 
+##  1 NA                  SURGICAL SAME DAY ADMISSION PHYSICIAN REFERRAL    
+##  2 NA                  OBSERVATION ADMIT           WALK-IN/SELF REFERRAL 
+##  3 NA                  EW EMER.                    TRANSFER FROM HOSPITAL
+##  4 NA                  EU OBSERVATION              EMERGENCY ROOM        
+##  5 NA                  EW EMER.                    TRANSFER FROM HOSPITAL
+##  6 NA                  OBSERVATION ADMIT           WALK-IN/SELF REFERRAL 
+##  7 NA                  EW EMER.                    PHYSICIAN REFERRAL    
+##  8 NA                  EW EMER.                    EMERGENCY ROOM        
+##  9 NA                  EW EMER.                    EMERGENCY ROOM        
+## 10 NA                  DIRECT EMER.                PHYSICIAN REFERRAL    
 ##    discharge_location       insurance language marital_status
 ##    &lt;chr&gt;                    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;         
-##  1 HOME                     Medicaid  ENGLISH  SINGLE        
-##  2 HOME                     Medicaid  ?        SINGLE        
-##  3 SKILLED NURSING FACILITY Medicare  ENGLISH  WIDOWED       
-##  4 SKILLED NURSING FACILITY Medicare  ENGLISH  DIVORCED      
-##  5 HOME                     Medicaid  ?        SINGLE        
-##  6 SKILLED NURSING FACILITY Medicare  ENGLISH  WIDOWED       
-##  7 SKILLED NURSING FACILITY Medicare  ENGLISH  MARRIED       
-##  8 HOME                     Other     ENGLISH  SINGLE        
-##  9 SKILLED NURSING FACILITY Medicare  ENGLISH  SINGLE        
-## 10 HOME HEALTH CARE         Medicare  ENGLISH  WIDOWED       
+##  1 SKILLED NURSING FACILITY Medicare  ENGLISH  MARRIED       
+##  2 HOME                     Medicare  ENGLISH  SINGLE        
+##  3 SKILLED NURSING FACILITY Medicare  ENGLISH  MARRIED       
+##  4 HOME                     Other     ENGLISH  MARRIED       
+##  5 HOME HEALTH CARE         Other     ENGLISH  SINGLE        
+##  6 HOME                     Other     ?        MARRIED       
+##  7 HOME                     Other     ENGLISH  SINGLE        
+##  8 HOME                     Medicare  ENGLISH  WIDOWED       
+##  9 HOME                     Medicare  ENGLISH  SINGLE        
+## 10 SKILLED NURSING FACILITY Other     ENGLISH  SINGLE        
 ##    ethnicity              edregtime           edouttime          
 ##    &lt;chr&gt;                  &lt;dttm&gt;              &lt;dttm&gt;             
-##  1 WHITE                  2162-10-27 18:07:00 2162-10-27 22:20:00
-##  2 WHITE                  2115-09-10 19:21:00 2115-09-10 22:09:00
-##  3 BLACK/AFRICAN AMERICAN 2189-07-26 08:46:00 2189-07-26 17:37:00
-##  4 WHITE                  2153-10-26 14:48:00 2153-10-26 20:20:00
-##  5 ASIAN                  NA                  NA                 
-##  6 WHITE                  2135-03-23 13:57:00 2135-03-23 21:30:00
-##  7 WHITE                  2157-01-05 12:54:00 2157-01-05 17:59:00
-##  8 BLACK/AFRICAN AMERICAN 2121-06-23 19:00:00 2121-06-24 18:59:00
-##  9 WHITE                  NA                  NA                 
-## 10 WHITE                  2155-08-19 00:25:00 2155-08-19 10:29:00
+##  1 WHITE                  NA                  NA                 
+##  2 WHITE                  2178-12-13 17:53:00 2178-12-13 23:08:00
+##  3 WHITE                  2164-01-31 21:26:00 2164-02-01 02:16:00
+##  4 WHITE                  2130-05-26 15:50:00 2130-05-26 23:56:00
+##  5 BLACK/AFRICAN AMERICAN 2149-05-26 23:27:00 2149-05-27 03:31:00
+##  6 OTHER                  2125-04-01 12:51:00 2125-04-01 21:26:00
+##  7 ASIAN                  2123-05-27 15:51:00 2123-05-27 22:47:00
+##  8 WHITE                  2140-02-05 09:07:00 2140-02-05 19:56:00
+##  9 BLACK/AFRICAN AMERICAN 2129-11-08 04:51:00 2129-11-08 10:43:00
+## 10 WHITE                  2191-10-14 23:00:00 2191-10-15 03:57:00
 ##    hospital_expire_flag
 ##                   &lt;int&gt;
 ##  1                    0
@@ -2050,7 +2050,7 @@ h1,h2,h3,h4,h5,h6{
 <span id="cb22-21"><a href="#cb22-21"></a><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(death_<span class="dv">30</span>), </span>
 <span id="cb22-22"><a href="#cb22-22"></a>            <span class="cf">function</span>(x){<span class="kw">ifelse</span>(<span class="kw">is.na</span>(x) <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>, <span class="st">&quot;No&quot;</span>, x)}) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb22-23"><a href="#cb22-23"></a><span class="st">  </span><span class="co"># save the final tibble</span></span>
-<span id="cb22-24"><a href="#cb22-24"></a><span class="st">  </span><span class="kw">save</span>(<span class="dt">file =</span> <span class="st">&quot;./mimiciv_shiny/icu_cohort.rds&quot;</span>)</span></code></pre></div>
+<span id="cb22-24"><a href="#cb22-24"></a><span class="st">  </span><span class="kw">saveRDS</span>(<span class="dt">file =</span> <span class="st">&quot;./mimiciv_shiny/icu_cohort.rds&quot;</span>)</span></code></pre></div>
 <p>Close database connection and clear workspace.</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">dbDisconnect</span>(con)</span></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
