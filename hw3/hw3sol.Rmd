@@ -128,7 +128,7 @@ if (!dir.exists("mimiciv_shiny")) {
 }
 ```
 
-```{r, eval = FALSE}
+```{r}
 icustays_tble %>%
   # merge in admissions and patients tables
   left_join(patients_tble, by = c("subject_id")) %>%
@@ -137,7 +137,7 @@ icustays_tble %>%
   left_join(labevents_tble, by = c("subject_id", "hadm_id")) %>%
   left_join(chartevents_tble, by = c("subject_id", "hadm_id")) %>% 
   group_by(subject_id) %>% 
-  arrange(intime, .by_group = FALSE) %>% 
+  arrange(admittime, .by_group = FALSE) %>% 
   # collect SQL query result into memory as a tibble
   collect() %>% 
   # keep only the first ICU stay of each unique patient
@@ -148,13 +148,13 @@ icustays_tble %>%
   filter(age_at_adm >= 18) %>%
   mutate(death_binary = ifelse(hospital_expire_flag == 1, "Yes", "No")) %>%
   # create an indicator for 30-day mortality
-  mutate(death_30 = ifelse(deathtime - intime <= 30, "Yes", "No")) %>%
+  mutate(death_30 = ifelse((deathtime - admittime)/(60*24) <= 30,
+                           "Yes", "No")) %>%
   mutate_at(vars(death_30), 
             function(x){ifelse(is.na(x) == TRUE, "No", x)}) %>% 
   # save the final tibble
   saveRDS(file = "./mimiciv_shiny/icu_cohort.rds")
 ```
-
 
 Close database connection and clear workspace.
 ```{r}
