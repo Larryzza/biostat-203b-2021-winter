@@ -1,4 +1,6 @@
 
+
+
 cores <- c("#098ebb", "#fdc23a", "#e96449", "#818286")
 
 box_zza <- function(texto, cor){
