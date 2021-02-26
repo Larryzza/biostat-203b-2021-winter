@@ -125,7 +125,7 @@ Put things together. Using one chain of pipes `%>%` to perform following data wr
 # make a directory mimiciv_shiny
 if (!dir.exists("mimiciv_shiny")) {
   dir.create("mimiciv_shiny")
-}
+} 
 ```
 
 ```{r}

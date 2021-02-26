@@ -2014,7 +2014,7 @@ h1,h2,h3,h4,h5,h6{
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># make a directory mimiciv_shiny</span></span>
 <span id="cb21-2"><a href="#cb21-2"></a><span class="cf">if</span> (<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;mimiciv_shiny&quot;</span>)) {</span>
 <span id="cb21-3"><a href="#cb21-3"></a>  <span class="kw">dir.create</span>(<span class="st">&quot;mimiciv_shiny&quot;</span>)</span>
-<span id="cb21-4"><a href="#cb21-4"></a>}</span></code></pre></div>
+<span id="cb21-4"><a href="#cb21-4"></a>} </span></code></pre></div>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>icustays_tble <span class="op">%&gt;%</span></span>
 <span id="cb22-2"><a href="#cb22-2"></a><span class="st">  </span><span class="co"># keep only the first ICU stay of each unique patient</span></span>
 <span id="cb22-3"><a href="#cb22-3"></a><span class="st">  </span><span class="kw">group_by</span>(subject_id) <span class="op">%&gt;%</span><span class="st"> </span></span>
