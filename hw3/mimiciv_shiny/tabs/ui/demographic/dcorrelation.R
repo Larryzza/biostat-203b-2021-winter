@@ -36,7 +36,10 @@ d_correlation <- tabPanel(title = "Correlation",
                                                   wellPanel(
                                                     HTML("<h1>2 Variables density plot<h1>"),
                                                     HTML("<h4>
-                                                          Please try to interact with images!
+                                                          Choose two variables you would like to explore. 
+                                                         Then decide to keep either all data set or only death within 30 day cases. 
+                                                         Click 'Select' button to plot. <br>
+                                                         <b>Please try to interact with images!</b>
                                                           <h4>")
                                                   )
                                            )

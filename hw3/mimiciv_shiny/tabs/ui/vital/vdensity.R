@@ -20,9 +20,11 @@ v_grouping <- tabPanel(title = "Vital grouping",
                                         column(width = 12,
                                                br(), 
                                                wellPanel(
-                                                 HTML("<h1>Analysis between two key outcomes<h1>"),
+                                                 HTML("<h1>Analysis between two key outcomes (death within 30 days or not)<h1>"),
                                                  HTML("<h4>
-                                                      Please try to interact with images!
+                                                    Choose the variable you would like to explore.
+                                                    Click 'Select' button to plot.<br> 
+                                                    <b>Please try to interact with images!</b>
                                                       <h4>")
                                                )
                                         )
@@ -30,7 +32,7 @@ v_grouping <- tabPanel(title = "Vital grouping",
                        ##-- Outputs ----
                        column(width = 12,
                               conditionalPanel(condition = "input.v_t2_select > 0",
-                                               HTML("<center><h1>density plot compare</h1></center>"),
+                                               HTML("<center><h1>density plot compare (death within 30 days or not)</h1></center>"),
                                                column(width = 12,
                                                       withSpinner(plotlyOutput("v_t2_plot"), type = 6)
                                                )           

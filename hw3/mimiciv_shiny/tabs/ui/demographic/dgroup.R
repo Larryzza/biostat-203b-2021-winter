@@ -36,7 +36,11 @@ d_group <- tabPanel(title = "Demographic grouping",
                                             wellPanel(
                                               HTML("<h1>Demographic plot by group<h1>"),
                                               HTML("<h4>
-                                                    Please try to interact with images!
+                                                    Choose the variable you would like to explore.
+                                                    Also select the criteria to group the data set. 
+                                                    Then decide to keep either all data set or only death within 30 day cases. 
+                                                    Click 'Select' button to plot. <br>
+                                                    <b>Please try to interact with images!</b>
                                                     <h4>")
                                             )
                                      )

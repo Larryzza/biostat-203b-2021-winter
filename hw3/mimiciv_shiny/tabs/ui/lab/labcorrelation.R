@@ -1,54 +1,57 @@
 lab_correlation <- tabPanel(title = "Correlation", 
-                          value = "lab_correlation",
-                          column(width = 10,
-                                 column(width = 2,
-                                        pickerInput(inputId = "lab_t3_valuex", 
-                                                    label = "value_x", 
-                                                    choices = lab, 
-                                                    selected = "calcium", 
-                                                    options = list(`live-search` = TRUE))
-                                 ),
-                                 column(width = 2,
-                                        pickerInput(inputId = "lab_t3_valuey", 
-                                                    label = "value_y", 
-                                                    choices = lab, 
-                                                    selected = "chloride",
-                                                    options = list(`live-search` = TRUE))
-                                 ),
-                                 column(width = 2,
-                                        pickerInput(inputId = "lab_t3_sub", 
-                                                    label = "keep", 
-                                                    choices = c("all", "death30"), 
-                                                    selected = "all",
-                                                    options = list(`live-search` = TRUE))
-                                 )
-                          ), 
-                          column(width = 2, style = "padding-top: 50px;",
-                                 actionBttn(inputId = "lab_t3_select", 
-                                            label = "Select", 
-                                            style = "fill", 
-                                            color = "success", 
-                                            icon = icon("check"), size = "sm") 
-                          ),
-                          conditionalPanel(condition = "input.lab_t3_select < 1",
-                                           column(width = 12,
-                                                  br(), 
-                                                  wellPanel(
-                                                    HTML("<h1>2 variables density plot<h1>"),
-                                                    HTML("<h4>
-                                                           Please try to interact with images!
+                            value = "lab_correlation",
+                            column(width = 10,
+                                   column(width = 2,
+                                          pickerInput(inputId = "lab_t3_valuex", 
+                                                      label = "value_x", 
+                                                      choices = lab, 
+                                                      selected = "calcium", 
+                                                      options = list(`live-search` = TRUE))
+                                   ),
+                                   column(width = 2,
+                                          pickerInput(inputId = "lab_t3_valuey", 
+                                                      label = "value_y", 
+                                                      choices = lab, 
+                                                      selected = "chloride",
+                                                      options = list(`live-search` = TRUE))
+                                   ),
+                                   column(width = 2,
+                                          pickerInput(inputId = "lab_t3_sub", 
+                                                      label = "keep", 
+                                                      choices = c("all", "death30"), 
+                                                      selected = "all",
+                                                      options = list(`live-search` = TRUE))
+                                   )
+                            ), 
+                            column(width = 2, style = "padding-top: 50px;",
+                                   actionBttn(inputId = "lab_t3_select", 
+                                              label = "Select", 
+                                              style = "fill", 
+                                              color = "success", 
+                                              icon = icon("check"), size = "sm") 
+                            ),
+                            conditionalPanel(condition = "input.lab_t3_select < 1",
+                                             column(width = 12,
+                                                    br(), 
+                                                    wellPanel(
+                                                      HTML("<h1>2 variables density plot<h1>"),
+                                                      HTML("<h4>
+                                                    Choose two variables you would like to explore.
+                                                    Then decide to keep either all data set or only death within 30 day cases. 
+                                                    Click 'Select' button to plot.<br> 
+                                                    <b>Please try to interact with images!</b>
                                                            <h4>")
-                                                  )
-                                           )
-                          ),
-                          ##-- Outputs ----
-                          column(width = 12,
-                                 conditionalPanel(condition = "input.lab_t3_select > 0",
-                                                  HTML("<center><h1>2 variables density plot</h1></center>"),
-                                                  column(width = 12,
-                                                         withSpinner(plotlyOutput("lab_t3_plot"), type = 6)
-                                                  )           
-                                 )
-                                 
-                          )
+                                                    )
+                                             )
+                            ),
+                            ##-- Outputs ----
+                            column(width = 12,
+                                   conditionalPanel(condition = "input.lab_t3_select > 0",
+                                                    HTML("<center><h1>2 variables density plot</h1></center>"),
+                                                    column(width = 12,
+                                                           withSpinner(plotlyOutput("lab_t3_plot"), type = 6)
+                                                    )           
+                                   )
+                                   
+                            )
 )
