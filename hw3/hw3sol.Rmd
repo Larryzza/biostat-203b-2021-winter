@@ -129,6 +129,16 @@ if (!dir.exists("mimiciv_shiny")) {
 ```
 
 ```{r}
+which(duplicated(labevents_tble %>% 
+                   select(subject_id, hadm_id) %>% 
+                   collect()) == TRUE) %>% length
+which(duplicated(chartevents_tble %>% 
+                   select(subject_id, hadm_id) %>% 
+                   collect()) == TRUE) %>% length
+```
+After a quick check, we found that there are some patients have more than one record at a single time point (duplicated resords). Thus, we need to only keep one record
+
+```{r}
 icustays_tble %>%
   # keep only the first ICU stay of each unique patient
   group_by(subject_id) %>% 
@@ -147,6 +157,10 @@ icustays_tble %>%
   show_query() %>%
   # collect SQL query result into memory as a tibble
   collect() %>% 
+  # delete duplicate row
+  group_by(subject_id) %>%
+  slice_head(n = 1) %>%
+  ungroup() %>% 
   # create an indicator for 30-day mortality
   mutate(death_30 = ifelse((deathtime - admittime)/(60*24) <= 30,
                            "Yes", "No")) %>%
