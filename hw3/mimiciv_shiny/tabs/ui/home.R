@@ -5,29 +5,14 @@ home <- tabPanel(title = "Home",
                  HTML("<h1><center>WELCOME TO <b>MIMIC-IV</b> data analysis
                       WEBPAGE</center></h1>"),
                  br(), br(), br(), br(),
-                 column(width = 3, align = "center",
-                        tab_zza(texto = "General analysis", 
-                                     cor = cores[1], 
-                                     icon = "icon.png", 
-                                     id = "analise_geral")
+                 column(width = 4, align = "center",
+                        tab_zza(texto = "General analysis", cor = cores[1], icon = "brasil.png", id = "h_t1")
                         ),
-                 column(width = 3, align = "center",
-                        tab_zza(texto = "Party analysis", 
-                                     cor = cores[2], 
-                                     icon = "icon.png", 
-                                     id = "analise_partidos")
+                 column(width = 4, align = "center",
+                        tab_zza(texto = "Lab data analysis", cor = cores[2], icon = "flag.png", id = "h_t2")
                  ),
-                 column(width = 3, align = "center",
-                        tab_zza(texto = "Candidates", 
-                                     cor = cores[3], 
-                                     icon = "icon.png", 
-                                     id = "analise_candidatos")
-                 ),
-                 column(width = 3, align = "center",
-                        tab_zza(texto = "About us", 
-                                     cor = cores[4], 
-                                     icon = "icon.png", 
-                                     id = "sobre")
+                 column(width = 4, align = "center",
+                        tab_zza(texto = "Vital data analysis", cor = cores[3], icon = "person.png", id = "h_t3")
                  ),
                  column(width = 12,
                         br(), br(), br(), br(),

@@ -2,8 +2,8 @@ observeEvent(input$navbar,{
   if(input$navbar == "home"){
     sendSweetAlert(
       session = session,
-      title = "welcome!",
-      text = HTML("Click here and see more details of the data set:
+      title = "welcome to the MIMIC-IV data explorer!",
+      text = HTML("Click here to see more details of the data set:
                   <form action='https://physionet.org/content/mimiciv/0.4/'>
                   <i class='fa fa-arrow-right'></i>
                   <input type='submit' value='MIMIC-IV' />
@@ -11,25 +11,18 @@ observeEvent(input$navbar,{
                   </form> From the data provider"),
       type = "info", 
       html = TRUE,
-      closeOnClickOutside = FALSE
+      closeOnClickOutside = TRUE
     )
   }
 })
 
-##-- + Atualizando abas conforme os cliques ----
-observeEvent(input$analise_geral,{
-  updateTabsetPanel(session = session, inputId = "navbar", selected = "eleicoes")
+
+observeEvent(input$h_t1,{
+  updateTabsetPanel(session = session, inputId = "navbar", selected = "demographic")
 })
-observeEvent(input$analise_partidos,{
-  updateTabsetPanel(session = session, inputId = "navbar", selected = "partidos")
+observeEvent(input$h_t2,{
+  updateTabsetPanel(session = session, inputId = "navbar", selected = "Lab")
 })
-observeEvent(input$analise_candidatos,{
-  updateTabsetPanel(session = session, inputId = "navbar", selected = "candidatos")
-})
-observeEvent(input$sobre,{
-  updateTabsetPanel(session = session, inputId = "navbar", selected = "sobre")
-})
-observeEvent(input$link_info,{
-  updateTabsetPanel(session = session, inputId = "navbar", selected = "candidatos_perfil_eleitorado")
-  closeSweetAlert(session = session)
+observeEvent(input$h_t3,{
+  updateTabsetPanel(session = session, inputId = "navbar", selected = "Vital")
 })

@@ -1,0 +1,54 @@
+v_correlation <- tabPanel(title = "Correlation", 
+                          value = "v_correlation",
+                          column(width = 10,
+                                 column(width = 2,
+                                        pickerInput(inputId = "v_t3_valuex", 
+                                                    label = "value_x", 
+                                                    choices = vital, 
+                                                    selected = "heart_rate" , 
+                                                    options = list(`live-search` = TRUE))
+                                 ),
+                                 column(width = 2,
+                                        pickerInput(inputId = "v_t3_valuey", 
+                                                    label = "value_y", 
+                                                    choices = vital, 
+                                                    selected = "respiratory_rate" ,
+                                                    options = list(`live-search` = TRUE))
+                                 ),
+                                 column(width = 2,
+                                        pickerInput(inputId = "v_t3_sub", 
+                                                    label = "keep", 
+                                                    choices = c("all", "death30"), 
+                                                    selected = "all",
+                                                    options = list(`live-search` = TRUE))
+                                 )
+                          ), 
+                          column(width = 2, style = "padding-top: 50px;",
+                                 actionBttn(inputId = "v_t3_select", 
+                                            label = "Select", 
+                                            style = "fill", 
+                                            color = "success", 
+                                            icon = icon("check"), size = "sm") 
+                          ),
+                          conditionalPanel(condition = "input.v_t3_select < 1",
+                                           column(width = 12,
+                                                  br(), 
+                                                  wellPanel(
+                                                    HTML("<h1>2 variables density plot<h1>"),
+                                                    HTML("<h4>
+                                                          Please try to interact with images!
+                                                           <h4>")
+                                                  )
+                                           )
+                          ),
+                          ##-- Outputs ----
+                          column(width = 12,
+                                 conditionalPanel(condition = "input.v_t3_select > 0",
+                                                  HTML("<center><h1>2 variables density plot</h1></center>"),
+                                                  column(width = 12,
+                                                         withSpinner(plotlyOutput("v_t3_plot"), type = 6)
+                                                  )           
+                                 )
+                                 
+                          )
+)
