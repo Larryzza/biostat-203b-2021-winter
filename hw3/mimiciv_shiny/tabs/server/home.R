@@ -2,14 +2,15 @@ observeEvent(input$navbar,{
   if(input$navbar == "home"){
     sendSweetAlert(
       session = session,
-      title = "welcome to the MIMIC-IV data explorer!",
-      text = HTML("Click here to see more details of the data set:
+      title = "welcome to MIMIC-IV explorer!",
+      text = HTML("Click here to see more details of the data set
                   <form action='https://physionet.org/content/mimiciv/0.4/'>
                   <i class='fa fa-arrow-right'></i>
                   <input type='submit' value='MIMIC-IV' />
                   <i class='fa fa-arrow-left'></i>
-                  </form> From the data provider"),
+                  </form> from the data provider"),
       type = "info", 
+      btn_labels = "Skip",
       html = TRUE,
       closeOnClickOutside = TRUE
     )
