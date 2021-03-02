@@ -24,7 +24,8 @@ Lab_grouping <- tabPanel(title = "Lab grouping",
                                                    HTML("<h4>
                                                     Choose the variable you would like to explore.
                                                     Click 'Select' button to plot. <br>
-                                                    <b>Please try to interact with images!</b>
+                                                    <b>Please try to interact with images to 
+                                                    find out more numerical summaries!</b>
                                                            <h4>")
                                                  )
                                           )

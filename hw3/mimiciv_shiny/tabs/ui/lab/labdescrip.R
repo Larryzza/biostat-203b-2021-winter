@@ -40,7 +40,8 @@ eleicoes_uf <- tabPanel(title = "General information",
                                                     Also select the criteria to group the data set. 
                                                     Then decide to keep either all data set or only death within 30 day cases. 
                                                     Click 'Select' button to plot. <br>
-                                                    <b>Please try to interact with images!</b>
+                                                    <b>Please try to interact with images to 
+                                                    find out more numerical summaries!</b>
                                                        <h4>")
                                                 )
                                          )

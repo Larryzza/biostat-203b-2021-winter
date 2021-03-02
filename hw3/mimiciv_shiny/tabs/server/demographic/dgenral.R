@@ -69,3 +69,13 @@ output$d_t1_plot <- renderPlotly({
                           showticklabels = FALSE))
   }
 })
+
+output$d_t1_ns <- renderPrint({
+  df <- d_t1_data()
+  
+  if(unique(df$type) %>% length > 30){
+    df$type %>% summary()
+  } else {
+    df$type %>% as.factor() %>% summary()
+  }
+})

@@ -39,7 +39,8 @@ v_correlation <- tabPanel(title = "Correlation",
                                                           Choose two variables you would like to explore.
                                                     Then decide to keep either all data set or only death within 30 day cases. 
                                                     Click 'Select' button to plot. <br>
-                                                    <b>Please try to interact with images!</b>
+                                                    <b>Please try to interact with images to 
+                                                    find out more numerical summaries!</b>
                                                            <h4>")
                                                   )
                                            )
