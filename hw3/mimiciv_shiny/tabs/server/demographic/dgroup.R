@@ -19,12 +19,12 @@ output$d_t2_plot <- renderPlotly({
   df <- d_t2_data()
   na.num <- which(is.na(df$type)==T) %>% length
   
-  df %>%
-    filter(is.na(type)==F) %>%
-    filter(type <= quantile(df$type , 0.975, na.rm=T),
-           type >= quantile(df$type , 0.025, na.rm=T)) -> df
-  
   if(unique(df$type) %>% length > 30){
+    df %>%
+      filter(is.na(type)==F) %>%
+      filter(type <= quantile(df$type , 0.975, na.rm=T),
+             type >= quantile(df$type , 0.025, na.rm=T)) -> df
+    
     plot_ly(df, x = ~type, color = ~group, type = "box") %>% 
     layout(title = paste0("missing value: ",na.num),
            xaxis = list(title = ''))
