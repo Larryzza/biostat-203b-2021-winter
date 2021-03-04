@@ -15,7 +15,7 @@ d_t3_data <- eventReactive(input$d_t3_select, {
 })
 
 
-output$d_t3_plot <- renderPlotly({
+output$d_t3_plot1 <- renderPlotly({
   df <- d_t3_data()
   na.num <- which(is.na(df$x)==T) %>% length
   
@@ -32,3 +32,22 @@ output$d_t3_plot <- renderPlotly({
            yaxis = list(title = 'value_y'))
 })
 
+output$d_t3_plot2 <- renderPlotly({
+  df <- d_t3_data()
+  na.num <- which(is.na(df$x)==T) %>% length
+  
+  df %>%
+    filter(x <= quantile(df$x , 0.975, na.rm=T),
+           x >= quantile(df$x , 0.025, na.rm=T),
+           y <= quantile(df$y , 0.975, na.rm=T),
+           y >= quantile(df$y , 0.025, na.rm=T)) -> df
+  
+  plot_ly(data = df, x = ~x, y = ~y,
+          marker = list(size = 10,
+                        color = 'rgba(255, 182, 193, .9)',
+                        line = list(color = 'rgba(152, 0, 0, .8)',
+                                    width = 2))) %>% 
+    layout(title = paste0("missing value: ",na.num),
+           yaxis = list(title = 'value_x'),
+           xaxis = list(title = 'value_y'))
+})

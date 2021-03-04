@@ -47,12 +47,21 @@ lab_correlation <- tabPanel(title = "Correlation",
                             ),
                             ##-- Outputs ----
                             column(width = 12,
-                                   conditionalPanel(condition = "input.lab_t3_select > 0",
-                                                    HTML("<center><h1>2 variables density plot</h1></center>"),
-                                                    column(width = 12,
-                                                           withSpinner(plotlyOutput("lab_t3_plot"), type = 6)
-                                                    )           
+                                   column(width = 6,
+                                          conditionalPanel(condition = "input.lab_t3_select > 0",
+                                                           HTML("<center><h1>2 Variables density plot</h1></center>"),
+                                                           column(width = 12,
+                                                                  withSpinner(plotlyOutput("lab_t3_plot1"), type = 6)
+                                                           )           
+                                          )
+                                   ),
+                                   column(width = 6,
+                                          conditionalPanel(condition = "input.lab_t3_select > 0",
+                                                           HTML("<center><h1>2 Variables Scatter plot</h1></center>"),
+                                                           column(width = 12,
+                                                                  withSpinner(plotlyOutput("lab_t3_plot2"), type = 6)
+                                                           )           
+                                          )
                                    )
-                                   
                             )
 )
