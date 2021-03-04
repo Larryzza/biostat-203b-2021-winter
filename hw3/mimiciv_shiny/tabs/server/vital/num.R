@@ -1,16 +1,16 @@
 
-d_t4_data <- eventReactive(input$d_t4_select, {
+v_t4_data <- eventReactive(input$v_t4_select, {
   
-  x <- isolate(input$d_t4_type)
+  x <- isolate(input$v_t4_type)
   
-  all_coligation <- icu_cohort %>% select(demo, "death_30") %>%  
+  all_coligation <- icu_cohort %>% select(vital, x) %>%  
     rename("group" = x)
 
   return(all_coligation = all_coligation)
 })
 
-output$d_t4_ns <- renderDataTable({
-  df <- d_t4_data()
+output$v_t4_ns <- renderDataTable({
+  df <- v_t4_data()
   vars<-dput(names(df %>% select(-group)))
   tableOne <- CreateTableOne(vars = vars, strata = "group", 
                              data = df, addOverall = T,

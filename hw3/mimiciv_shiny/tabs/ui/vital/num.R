@@ -1,8 +1,8 @@
-d_num <- tabPanel(title = "Descriptive summary", 
-                    value = "d_num",
+v_num <- tabPanel(title = "Descriptive summary", 
+                    value = "v_num",
                     column(width = 10,
                            column(width = 2,
-                                  pickerInput(inputId = "d_t4_type", 
+                                  pickerInput(inputId = "v_t4_type", 
                                               label = "Group by", 
                                               choices = c(demo_groups, "death_30"), 
                                               selected = "death_30", 
@@ -10,13 +10,13 @@ d_num <- tabPanel(title = "Descriptive summary",
                            )
                     ),
                     column(width = 2, style = "padding-top: 50px;",
-                           actionBttn(inputId = "d_t4_select", 
+                           actionBttn(inputId = "v_t4_select", 
                                       label = "Select", 
                                       style = "fill", 
                                       color = "success", 
                                       icon = icon("check"), size = "sm") 
                     ),
-                    conditionalPanel(condition = "input.d_t4_select < 1",
+                    conditionalPanel(condition = "input.v_t4_select < 1",
                                      column(width = 12,
                                             br(), 
                                             wellPanel(
@@ -29,11 +29,11 @@ d_num <- tabPanel(title = "Descriptive summary",
                                      )
                     ),
                     column(width = 12,
-                                  conditionalPanel(condition = "input.d_t4_select > 0",
+                                  conditionalPanel(condition = "input.v_t4_select > 0",
                                                    br(), hr(), br(),
                                                    HTML("<center><h1>Numerical Summaries</h1></center>"),
                                                    column(width = 12,
-                                                          withSpinner(dataTableOutput("d_t4_ns"), type = 6)
+                                                          withSpinner(dataTableOutput("v_t4_ns"), type = 6)
                                                    )           
                                   )
                     )

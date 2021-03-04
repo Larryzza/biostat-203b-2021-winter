@@ -1,6 +1,8 @@
+library(DT)
 library(shiny)
 library(dplyr)
 library(plotly)
+library(tableone)
 library(data.table)
 library(tidyverse)
 library(shinydashboard)

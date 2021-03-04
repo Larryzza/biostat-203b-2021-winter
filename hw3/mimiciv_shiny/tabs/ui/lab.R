@@ -5,7 +5,8 @@ Lab <- tabPanel(title = "Lab",
                      value = "Lab",
                      hr(),
                      tabsetPanel(
-                       eleicoes_uf,
+                       lab_des,
+                       lab_num,
                        Lab_grouping,
                        lab_correlation
                      )

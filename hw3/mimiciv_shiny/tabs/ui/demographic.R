@@ -6,6 +6,7 @@ demographic <- tabPanel(title = "demographic",
                     hr(),
                      tabsetPanel(
                        d_geral,
+                       d_num,
                        d_group,
                        d_correlation
                      )

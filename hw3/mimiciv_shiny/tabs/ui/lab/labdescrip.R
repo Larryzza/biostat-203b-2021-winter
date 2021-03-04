@@ -1,5 +1,5 @@
-eleicoes_uf <- tabPanel(title = "General information", 
-                        value = "uf",
+lab_des <- tabPanel(title = "General information", 
+                        value = "lab_des",
                         column(width = 10,
                                column(width = 2,
                                       pickerInput(inputId = "lab_t1_value", 

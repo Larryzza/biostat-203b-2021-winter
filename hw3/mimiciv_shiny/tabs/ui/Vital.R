@@ -6,6 +6,7 @@ Vital <- tabPanel(title = "Vital",
                       hr(),
                       tabsetPanel(
                         v_infor,
+                        v_num,
                         v_grouping,
                         v_correlation
                       )
