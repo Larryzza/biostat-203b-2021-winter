@@ -1,4 +1,4 @@
-d_num <- tabPanel(title = "Descriptive summary", 
+d_num <- tabPanel(title = "Descriptive statistics", 
                     value = "d_num",
                     column(width = 10,
                            column(width = 2,
@@ -23,7 +23,10 @@ d_num <- tabPanel(title = "Descriptive summary",
                                               HTML("<h1>Descriptive statistics<h1>"),
                                               HTML("<h4>
                                                          Choose the group you would like to explore. 
-                                                         Click 'Select' button to see descriptive statistics <br>
+                                                         Click 'Select' button to see 
+                                                         descriptive statistics <br>
+                                                         <b>For more visualization information, 
+                                                         please refer to other panels.</b>
                                                          <h4>")
                                             )
                                      )

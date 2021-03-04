@@ -39,7 +39,6 @@ d_geral <- tabPanel(title = "General information",
                                      )
                     ),
                     column(width = 12,
-                           column(width = 8,
                                   conditionalPanel(condition = "input.d_t1_select > 0",
                                                    br(), hr(), br(),
                                                    HTML("<center><h1>Demographic information plot</h1></center>"),
@@ -47,15 +46,5 @@ d_geral <- tabPanel(title = "General information",
                                                           withSpinner(plotlyOutput("d_t1_plot"), 6)
                                                    )           
                                   )
-                           ),
-                           column(width = 4,
-                                  conditionalPanel(condition = "input.d_t1_select > 0",
-                                                   br(), hr(), br(),
-                                                   HTML("<center><h1>Numerical Summaries</h1></center>"),
-                                                   column(width = 12,
-                                                          withSpinner(verbatimTextOutput("d_t1_ns"), type = 6)
-                                                   )           
-                                  )
-                           )
                     )
 )
