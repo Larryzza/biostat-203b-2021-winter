@@ -1,0 +1,186 @@
+---
+title: "Biostat 203B Homework 3"
+author: Zian ZHUANG
+subtitle: Due Mar 5 @ 11:59PM
+output:
+  html_document:
+    highlight: pygments
+    toc: yes
+    toc_float: yes
+---
+
+<!-- Setup -->
+<style type="text/css">
+body{ /* Normal  */
+      font-size: 17px;
+      font-family: "Times New Roman";
+  }
+h1,h2,h3,h4,h5,h6{
+  font-family: "Times New Roman";
+}
+</style>
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, cache.lazy = FALSE)
+library(DBI)
+library(dbplyr)
+library(RPostgreSQL)
+library(tidyverse)
+library(lubridate)
+library(data.table)
+library(magrittr)
+library(tidyverse)
+```
+<!-- Begin writing -->
+
+Display machine information for reproducibility:
+```{r}
+sessionInfo()
+```
+
+## Q1. Compile the ICU cohort in HW2 Q8 from the PostgreSQL database `mimiciv`. 
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+is_teaching_server = Sys.info()[["nodename"]] == "ucla-biostat-203b"
+```
+
+Below is an outline of steps.
+
+### Q1.1 
+Connect to database `mimiciv`. We are going to use username `postgres` with password `postgres` to access the `mimiciv` database.
+```{r}
+# Load configuration settings
+#host  <- '127.0.0.1'
+#port  <- '5432'
+user  <- ifelse(Sys.info()[["nodename"]] == "ucla-biostat-203b", 
+                'postgres', # on teaching server
+                'huazhou')  # on my MacBook
+password <- ifelse(Sys.info()[["nodename"]] == "ucla-biostat-203b",
+                   'postgres', # on teaching server
+                   'huazhou')  # on my MacBook   
+dbname <- 'mimiciv'
+# Connect to the database using the configuration settings
+(con <- dbConnect(RPostgreSQL::PostgreSQL(), 
+                  dbname = dbname, 
+                  user = user, 
+                  password = password))
+```
+
+### Q1.2
+List all schemas in the `mimiciv` database.
+```{r}
+dbGetQuery(con, "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA")
+```
+
+List tables in the `mimiciv` database:
+```{r}
+dbListTables(con)
+```
+
+List schemas and tables in the `mimiciv` database (bash command).
+```{bash, include = is_teaching_server, eval = is_teaching_server}
+psql -U postgres -d mimiciv -c "\dt *."
+```
+
+### Q1.3
+Connect to the icustays table. Note how to use `Id()` to specify the schema containing the table.
+```{r}
+icustays_tble <- tbl(con, Id(schema = "mimic_icu", table = "icustays")) %>%
+  print(width = Inf)
+```
+
+### Q1.4
+Connect to the patients table.
+```{r}
+patients_tble <- tbl(con, Id(schema = "mimic_core", table = "patients")) %>%
+  print(width = Inf)
+```
+
+### Q1.5
+Connect to the admissions table.
+```{r}
+admissions_tble <- tbl(con, Id(schema = "mimic_core", table = "admissions")) %>%
+  print(width = Inf)
+```
+
+### Q1.6
+Connect to the `mimic_labevents_icu` table.
+```{r}
+labevents_tble <- tbl(con, Id(schema = "public", 
+                              table = "mimic_labevents_icu")) %>%
+  print(width = Inf)
+```
+
+### Q1.7
+Connect to `mimic_chartevents_icu` table.
+```{r}
+chartevents_tble <- tbl(con, Id(schema = "public", 
+                              table = "mimic_chartevents_icu")) %>%
+  print(width = Inf)
+```
+
+### Q1.8
+Put things together. Using one chain of pipes `%>%` to perform following data wrangling steps: (i) keep only the first ICU stay of each unique patient, (ii) merge in admissions and patients tables, (iii) keep adults only (age at admission >= 18), (iv) merge in the labevents and chartevents tables, (v) display the SQL query, (vi) collect SQL query result into memory as a tibble, (vii) create an indicator for 30-day mortality, (viii) save the final tibble to an `icu_cohort.rds` R data file in the `mimiciv_shiny` folder.
+
+```{r}
+# make a directory mimiciv_shiny
+if (!dir.exists("mimiciv_shiny")) {
+  dir.create("mimiciv_shiny")
+} 
+```
+
+```{r}
+which(duplicated(labevents_tble %>% 
+                   select(subject_id, hadm_id) %>% 
+                   collect()) == TRUE) %>% length
+which(duplicated(chartevents_tble %>% 
+                   select(subject_id, hadm_id) %>% 
+                   collect()) == TRUE) %>% length
+```
+After a quick check, we found that there are some patients have more than one record at a single time point (duplicated resords). Thus, we need to only keep one record
+
+```{r}
+icustays_tble %>%
+  # keep only the first ICU stay of each unique patient
+  group_by(subject_id) %>% 
+  filter(rank(intime) == 1) %>% 
+  ungroup() %>% 
+  # merge in admissions and patients tables
+  left_join(patients_tble, by = c("subject_id")) %>%
+  left_join(admissions_tble, by = c("subject_id", "hadm_id")) %>%
+  # keep adults only (age at admission >= 18)
+  mutate(age_at_adm = year(admittime) - anchor_year + anchor_age) %>%
+  filter(age_at_adm >= 18) %>%
+  # merge in the labevents and chartevents tables
+  left_join(labevents_tble, by = c("subject_id", "hadm_id")) %>%
+  left_join(chartevents_tble, by = c("subject_id", "hadm_id")) %>%
+  # display the SQL query
+  show_query() %>%
+  # collect SQL query result into memory as a tibble
+  collect() %>% 
+  # delete duplicate row
+  group_by(subject_id) %>%
+  slice_head(n = 1) %>%
+  ungroup() %>% 
+  # create an indicator for 30-day mortality
+  mutate(death_30 = ifelse((deathtime - admittime)/(60*24) <= 30,
+                           "Yes", "No")) %>%
+  mutate_at(vars(death_30), 
+            function(x){ifelse(is.na(x) == TRUE, "No", x)}) %>%
+  # save the final tibble
+  saveRDS(file = "./mimiciv_shiny/icu_cohort.rds")
+```
+
+Close database connection and clear workspace.
+```{r}
+dbDisconnect(con)
+rm(list = ls())
+```
+
+## Q2. Shiny app
+
+Develop a Shiny app for exploring the ICU cohort data created in Q1. The app should reside in the `mimiciv_shiny` folder. The app should provide easy access to the graphical and numerical summaries of variables (demographics, lab measurements, vitals) in the ICU cohort.
+
+> **solution**: 
+Please refer to: https://zianzhuang.shinyapps.io/mimiciv_shiny/
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
