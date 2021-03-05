@@ -14,6 +14,8 @@ cores <- wes_palette("BottleRocket1", 5)[3:5]
 
 icu_cohort <- readRDS("icu_cohort.rds")
 
+icu_cohort <- icu_cohort %>% mutate_at(vars(hospital_expire_flag), as.factor)
+
 tab_zza <- function(texto, cor, icon, id){
   HTML(paste0('<a id="', id,'" href="#" class="action-button">
                   <div class = "voronoys-block" style = "background-color:', cor, ';"> 

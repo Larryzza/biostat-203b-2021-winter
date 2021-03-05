@@ -12,7 +12,7 @@ v_correlation <- tabPanel(title = "Correlation",
                                         pickerInput(inputId = "v_t3_valuey", 
                                                     label = "value_y", 
                                                     choices = vital, 
-                                                    selected = "respiratory_rate" ,
+                                                    selected = "non_invasive_blood_pressure_systolic" ,
                                                     options = list(`live-search` = TRUE))
                                  ),
                                  column(width = 2,
@@ -47,12 +47,21 @@ v_correlation <- tabPanel(title = "Correlation",
                           ),
                           ##-- Outputs ----
                           column(width = 12,
-                                 conditionalPanel(condition = "input.v_t3_select > 0",
-                                                  HTML("<center><h1>2 variables density plot</h1></center>"),
-                                                  column(width = 12,
-                                                         withSpinner(plotlyOutput("v_t3_plot"), type = 6)
-                                                  )           
+                                 column(width = 6,
+                                        conditionalPanel(condition = "input.v_t3_select > 0",
+                                                         HTML("<center><h1>2 Variables density plot</h1></center>"),
+                                                         column(width = 12,
+                                                                withSpinner(plotlyOutput("v_t3_plot1"), type = 6)
+                                                         )           
+                                        )
+                                 ),
+                                 column(width = 6,
+                                        conditionalPanel(condition = "input.v_t3_select > 0",
+                                                         HTML("<center><h1>2 Variables Scatter plot</h1></center>"),
+                                                         column(width = 12,
+                                                                withSpinner(plotlyOutput("v_t3_plot2"), type = 6)
+                                                         )           
+                                        )
                                  )
-                                 
                           )
 )

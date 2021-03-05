@@ -12,7 +12,7 @@ lab_correlation <- tabPanel(title = "Correlation",
                                           pickerInput(inputId = "lab_t3_valuey", 
                                                       label = "value_y", 
                                                       choices = lab, 
-                                                      selected = "chloride",
+                                                      selected = "wbc",
                                                       options = list(`live-search` = TRUE))
                                    ),
                                    column(width = 2,
