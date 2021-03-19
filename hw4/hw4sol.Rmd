@@ -1,7 +1,7 @@
 ---
 title: "Biostat 203B Homework 4"
 author: Zian ZHUANG
-subtitle: Due Mar 12 @ 11:59PM
+subtitle: Due Mar 19 @ 11:59PM
 output:
   html_document:
     highlight: pygments
@@ -48,7 +48,8 @@ sessionInfo()
 
 Through the Shiny app developed in HW3, we observe abundant missing values in the MIMIC-IV ICU cohort we created. In this question, we use multiple imputation to obtain a data set without missing values.
 
-0. Read following tutorials on the R package miceRanger for imputation: <https://github.com/farrellday/miceRanger>, <https://cran.r-project.org/web/packages/miceRanger/vignettes/miceAlgorithm.html>.
+### Q1.0 
+Read following tutorials on the R package miceRanger for imputation: <https://github.com/farrellday/miceRanger>, <https://cran.r-project.org/web/packages/miceRanger/vignettes/miceAlgorithm.html>.
 
     A more thorough book treatment of the practical imputation strategies is the book [*_Flexible Imputation of Missing Data_*](https://stefvanbuuren.name/fimd/) by Stef van Buuren. 
 
@@ -56,20 +57,23 @@ Through the Shiny app developed in HW3, we observe abundant missing values in th
 Explain the jargon MCAR, MAR, and MNAR.
 
 > **solution**: 
-MAR： missing at random. The absence of data was independent of incomplete variables as well as complete variables.
-MCAR: missing completely at random. The absence of data relies solely on the complete variable.
-MNAR: missing not at random. The absence of data in the incomplete variables relies on the incomplete variables themselves and such absence is not negligible.
+
+>- MAR: missing at random. The absence of data was independent of incomplete variables as well as complete variables.
+- MCAR: missing completely at random. The absence of data relies solely on the complete variable.
+- MNAR: missing not at random. The absence of data in the incomplete variables relies on the incomplete variables themselves and such absence is not negligible.
 
 ### Q1.2
 Explain in a couple of sentences how the Multiple Imputation by Chained Equations (MICE) work.
 
 > **solution**: 
-operates under the assumption that given the variables used in the imputation procedure, the missing data are Missing At Random (MAR). In the MICE procedure a series of regression models are run whereby each variable with missing data is modeled conditional upon the other variables in the data. This means that each variable can be modeled according to its distribution. [reference](https://onlinelibrary.wiley.com/doi/pdf/10.1002/mpr.329)
+operates under the assumption that given the variables used in the imputation procedure, the missing data are Missing At Random (MAR). In the MICE procedure a series of regression models are run whereby each variable with missing data is modeled conditional upon the other variables in the data. This means that each variable can be modeled according to its distribution. [reference link](https://onlinelibrary.wiley.com/doi/pdf/10.1002/mpr.329)
 
 ### Q1.3 
 Perform a data quality check of the ICU stays data. Discard variables with substantial missingness, say >5000 `NA`s. Replace apparent data entry errors by `NA`s.
 
-```{r}
+Please note that here we drop variables that have more than 7000 NAs. In addition, we assign the outliers (out of 1.5*IQR range) of each numeric variables as NA.
+```{r, eval = FALSE}
+#define functions
 .quantile_cut <- function(x){
   lb <- quantile(df[, x] , 0.25, na.rm = TRUE)
   ub <- quantile(df[, x] , 0.75, na.rm = TRUE)
@@ -107,7 +111,6 @@ df <- df %>%
   cbind(numeric_var)
 
 ```
-Please note that here we drop variables that have more than 7000 NAs. In addition, we assign the outliers (out of 1.5*IQR range) of each numeric variables as NA.
 
 ### Q1.4
 Impute missing values by `miceRanger` (request $m=3$ datasets). This step is very computational intensive. Make sure to save the imputation results as a file.
@@ -195,7 +198,7 @@ df <- Final_data %>%
 
 Develop at least two analytic approaches for predicting the 30-day mortality of patients admitted to ICU using demographic information (gender, age, marital status, ethnicity), first lab measurements during ICU stay, and first vital measurements during ICU stay. For example, you can use (1) logistic regression (`glm()` function), (2) logistic regression with lasso penalty (glmnet package), (3) random forest (randomForest package), or (4) neural network.
 
-### Q2.1
+### Q2.1 Data preparation
 Partition data into 80% training set and 20% test set. Stratify partitioning according the 30-day mortality status.
 
 ```{r}
@@ -225,12 +228,13 @@ data.train.y <- dummy_cols(icu_cohort$death_30[folds[-1] %>% Reduce("c", .)],
   
 ```
 
-### Q2.2
+### Q2.2 Modeling
 Train the models using the training set.
 
 > We noticed that the data set is heavily imbalanced, which may cause the problem of low prediction accuracy for death_30 cases. Considering that a major goal of the prediction model may be sending early warning to cases which has a higher risk of death, we tryed to increase the prediction accuracy for death_30 cases by using the weighting and resampling method in two models. 
 
-#### Method 1
+- **Method 1**
+
 neural network (MLP) [original weight]
 ```{r, eval = FALSE}
 model <- keras_model_sequential() 
@@ -274,8 +278,9 @@ plot(history1)
 
 We can see from the history plot that the original model (without weighting and bias_initializer) converge very quick. It provided a high accuracy for the non death_30 cases, while the predicted accuracy for death_30 cases is terribly low.
 
-#### Method 1.1
 Then we tried to add weighting in the model. We also set a initializing weight for the MLP model to help model converge.
+
+- **Method 1.1**
 
 neural network (MLP) [with weighting and bias_initializer]
 ```{r, eval = FALSE}
@@ -300,7 +305,7 @@ set.seed(199609)
 system.time({
 history2 <- model %>% fit(
   data.train.x, data.train.y, 
-  epochs = 500, batch_size = 128, 
+  epochs = 700, batch_size = 128, 
   class_weight = list("0" = 1, "1" = 8), 
   validation_split = 0.3
 )
@@ -321,10 +326,13 @@ confusionMatrix (results2 %>% round %>% as.factor,
 plot(history2)
 ```
 
-#### Method 2
-In this model, we created relatively balanced samples (survival:dead = 3:1) by random under-sampling method and applied the XGBoost model.
+We can tell from the history plots that the model converged after around 400 epochs (the validation line became stable).
+
+- **Method 2**
 
 XGBoost model [with variable selection and re-sampling]
+
+In this model, we created relatively balanced samples (survival:dead = 3:1) by random under-sampling method.
 ```{r}
 ###### model function ########
 .importance_function <- function(dtrain){
@@ -361,9 +369,9 @@ XGBoost model [with variable selection and re-sampling]
 .model_function_Total <- function(importance=F,auc=T){
   if(importance==T){
     cv.group.x <- lapply(folds,function(x){out<-NULL;
-    out<-rbind(out,data.frame(label = b.train.y[-x],b.train.x[-x,]))})
+    out<-rbind(out,data.frame(label = b.train.y[-x], b.train.x[-x,]))})
     cv.group.y <- lapply(folds,function(x){out<-NULL;
-    out<-rbind(out,data.frame(label = b.train.y[x],b.train.x[x,]))})
+    out<-rbind(out,data.frame(label = b.train.y[x], b.train.x[x,]))})
     
     dtrain <- lapply(cv.group.x, 
                      function(x){out <- xgb.DMatrix(data = x %>% as.matrix() 
@@ -399,13 +407,13 @@ for(i in 1:300){
   b.train.y <- data.balanced[, 1] %>% as.matrix()
   folds <- createFolds(factor(b.train.y), k = 10, list = T)
   importance_combine <- rbind(importance_combine,
-                              .model_function_Total(importance=T,auc=F))
+                              .model_function_Total(importance = T, auc = F))
   print(i)
 }
 
 importance_combine %>%
   group_by(Feature) %>%
-  summarise(mean=mean(Gain)) %>%
+  summarise(mean = mean(Gain)) %>%
   arrange(desc(mean)) -> importance_sum
 
 saveRDS(importance_sum, "importance_sum.rds")
@@ -414,13 +422,16 @@ saveRDS(importance_sum, "importance_sum.rds")
 Check the plot of top 10 important variables
 ```{r}
 importance_sum <- readRDS("importance_sum.rds")
-ggplot(data=importance_sum[1:10,],
-       mapping=aes(x=reorder(Feature, -mean),y=mean,fill=Feature))+
-  geom_bar(stat="identity")+
+ggplot(data = importance_sum[1:10, ],
+       mapping = aes(x = reorder(Feature, -mean), y = mean, fill=Feature))+
+  geom_bar(stat = "identity")+
   scale_fill_brewer(palette = "RdBu") +
   xlab(NULL)+
   ylab("Relative Rmpotortance")+
-  theme_few()
+  theme_few()+
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x = element_blank())
+  
 ```
 
 Then we did a forward-stepwise variable selection according to the AIC value (10-folder cross validation average).
@@ -440,12 +451,12 @@ for(f in 1:15) {
     b.train.y <- data.balanced[,1] %>% as.matrix()
     folds <- createFolds(factor(b.train.y), k = 10, list = T)
     auc_value_combine <- .model_function_Total(importance=F,auc=T)
-    print(paste0(f," variables - ",i,"%"))
+    #print(paste0(f," variables - ", i, "%"))
   }
   
   auc_new <- auc_value_combine %>% mean()
   auc_sd <- auc_value_combine %>% sd()
-  auc.comb <- rbind(auc.comb,data.frame(auc_new,auc_sd,model=f))
+  auc.comb <- rbind(auc.comb, data.frame(auc_new, auc_sd,model=f))
 }
 feature_select <- feature_select[1 : which.max(auc.comb$auc_new)] %>% 
   as.character()
@@ -466,7 +477,7 @@ data.balanced <- ovun.sample(.data_Yes~., data = temp, p = 0.33,
                                 seed = 199609, method = "under")$data
 dtrain <- xgb.DMatrix(data = data.balanced[,-1] %>% as.matrix(),
                       label= data.balanced[,1] %>% as.matrix())
-dtest <- xgb.DMatrix(data = data.test.x[,feature_select] %>% as.matrix(),
+dtest <- xgb.DMatrix(data = data.test.x[, feature_select] %>% as.matrix(),
                       label= data.test.y %>% as.matrix())
 model <- xgboost(data = dtrain,
                  nround = 500,
@@ -481,28 +492,28 @@ saveRDS(xgbpred, "./xgbpred.rds")
 check the prediction results
 ```{r}
 xgbpred <- readRDS("./xgbpred.rds")
-confusionMatrix (xgbpred %>% round %>% as.factor(), 
+confusionMatrix(xgbpred %>% round %>% as.factor(), 
                  data.test.y %>% as.factor())
 ```
 
-### Q2.3
+### Q2.3 Comparation
 Compare model prediction performance on the test set.
 
-The balanced accuracy shows the ...
+According to the confusion Matrix, we found that the two models have similar prediction accuracy. XGBoost model has a slightly higher overall accuracy (0.79) and MLP model predict better for death_30 cases (0.69). Both two models have a Balanced Accuracy at around 0.70.
 
-We also ploted auc curves for two models. According to the
+We also plotted ROC curves for two models. ROC plots shows that two models have similar prediction pattern and AUC value.
 ```{r}
-rocmlp<-roc(data.test.y %>% factor, results2, quiet = TRUE)
-rocxgs<-roc(data.test.y %>% factor, xgbpred, quiet = TRUE)
+rocmlp<-roc(data.test.y %>% factor, 
+            results2 %>% as.numeric, quiet = TRUE)
+rocxgs<-roc(data.test.y %>% factor, 
+            xgbpred, quiet = TRUE)
 
-plot(rocmlp,col = "dark blue",lty=1,lwd=2)
-plot(rocxgs,add = TRUE,col = "orange",lty=1,lwd=2)
-legend("bottomright",legend=c("XGBoost (AUC:0.7821)",
-                              "MLP (AUC:0.7768)"),
+plot(rocmlp, col = "dark blue", lty=1, lwd=2)
+plot(rocxgs, add = TRUE,col = "orange", lty=1, lwd=2)
+legend("bottomright", legend=c("XGBoost (AUC:0.7821)",
+                              "MLP (AUC:0.7715)"),
        col=c("orange", "dark blue"),
-       lty=1,lwd=2,cex=0.8,bty="n")
+       lty=1, lwd=2, cex=0.8, bty="n")
 ```
-
-Thank you for your time!
 
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
