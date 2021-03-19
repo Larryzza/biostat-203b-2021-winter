@@ -71,7 +71,8 @@ operates under the assumption that given the variables used in the imputation pr
 ### Q1.3 
 Perform a data quality check of the ICU stays data. Discard variables with substantial missingness, say >5000 `NA`s. Replace apparent data entry errors by `NA`s.
 
-Please note that here we drop variables that have more than 7000 NAs. In addition, we assign the outliers (out of 1.5*IQR range) of each numeric variables as NA.
+>Please note that here we dropped variables that have more than 7000 NAs. In addition, we assigned the outliers (out of 1.5*IQR range) of each numeric variables as NA.
+
 ```{r, eval = FALSE}
 #define functions
 .quantile_cut <- function(x){
@@ -115,7 +116,7 @@ df <- df %>%
 ### Q1.4
 Impute missing values by `miceRanger` (request $m=3$ datasets). This step is very computational intensive. Make sure to save the imputation results as a file.
 
-> Note that we don't include the `age_at_adm` in the multiple imputation, beacase 1) it has no missing value in original data set 2) it does not converge in the `miceRanger` 3) it may also influence the converge of other variabls. We also remove `death_30` and `discharge location` and `hospital expire flag` since they contain the information of response (survival/dead), part of which is supposed to be unknown in the predicting part.
+> Note that we didn't include the `age_at_adm` in the multiple imputation, beacase 1) it has no missing value in original data set; 2) it does not converge in the `miceRanger`; 3) it may also influence the converge of other variabls. We also removed `death_30` and `discharge location` and `hospital expire flag` since they contain the information of response (survival/dead), part of which is supposed to be unknown in the predicting part.
 
 ```{r, eval = FALSE}
 # Set up back ends.
@@ -499,14 +500,15 @@ confusionMatrix(xgbpred %>% round %>% as.factor(),
 ### Q2.3 Comparation
 Compare model prediction performance on the test set.
 
-According to the confusion Matrix, we found that the two models have similar prediction accuracy. XGBoost model has a slightly higher overall accuracy (0.79) and MLP model predict better for death_30 cases (0.69). Both two models have a Balanced Accuracy at around 0.70.
+According to the confusion Matrix presented above, we found that the two models have similar performance. XGBoost model has a slightly higher overall accuracy (79%) and MLP model predict better for death_30 cases (69%). Both two models have a Balanced Accuracy at around 70%. Then we plotted Receiver Operating Characteristic (ROC) curves, which also suggests that two models have similar prediction pattern and AUC value.
 
-We also plotted ROC curves for two models. ROC plots shows that two models have similar prediction pattern and AUC value.
 ```{r}
-rocmlp<-roc(data.test.y %>% factor, 
-            results2 %>% as.numeric, quiet = TRUE)
-rocxgs<-roc(data.test.y %>% factor, 
-            xgbpred, quiet = TRUE)
+rocmlp<-roc(controls = results2[data.test.y==0],
+            cases = results2[data.test.y==1],
+            quiet = TRUE)
+rocxgs<-roc(controls = xgbpred[data.test.y==0],
+            cases = xgbpred[data.test.y==1],
+            quiet = TRUE)
 
 plot(rocmlp, col = "dark blue", lty=1, lwd=2)
 plot(rocxgs, add = TRUE,col = "orange", lty=1, lwd=2)
@@ -515,5 +517,6 @@ legend("bottomright", legend=c("XGBoost (AUC:0.7821)",
        col=c("orange", "dark blue"),
        lty=1, lwd=2, cex=0.8, bty="n")
 ```
+
 
 <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
